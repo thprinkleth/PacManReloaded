@@ -1,0 +1,9 @@
+name: PacMan
+version: '${project.version}'
+main: de.minecraft.plugin.spigot.PacMan
+authors: [ Jens, Florian, Justus, Vera ]
+description: First Person PacMan in Minecraft
+
+commands:
+  setspawn:
+    description: Sets the Spawn-Location where the Player will end up upon joining the server.
