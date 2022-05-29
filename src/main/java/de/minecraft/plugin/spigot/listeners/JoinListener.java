@@ -8,7 +8,7 @@ import org.bukkit.event.player.PlayerJoinEvent;
 
 public class JoinListener implements Listener {
 
-    PacMan instance = new PacMan();
+    PacMan instance = PacMan.getInstance();
 
     /**
      * Runs upon a player joining the server

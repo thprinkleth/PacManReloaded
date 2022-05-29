@@ -9,7 +9,7 @@ import org.bukkit.entity.Player;
 
 public class CmdSetSpawn implements CommandExecutor {
 
-    private PacMan instance = new PacMan();
+    private PacMan instance = PacMan.getInstance();
 
     /**
      * Runs when someone executes a command (Syntax: "/<command> <args...>")

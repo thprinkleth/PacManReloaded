@@ -20,11 +20,12 @@ public class FileManager {
      */
     public FileManager(String name) {
 
-        // Creates the folder in where the file will be saved
-        if (!folder.exists())
-            folder = new File("/PacMan/");
+        folder = new File("plugins/PacMan");
 
-        folder.mkdir();
+        // Creates the folder in where the file will be saved
+        if (!folder.exists()) {
+            folder.mkdir();
+        }
 
         // Creates the file and enables it to be modified
         file = new File(folder, name);
