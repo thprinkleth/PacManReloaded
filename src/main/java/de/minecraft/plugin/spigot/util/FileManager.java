@@ -79,6 +79,22 @@ public class FileManager {
         string = string.replace("{PitchValue}", String.valueOf(player.getLocation().getPitch()));
         string = string.replace("{WorldValue}", String.valueOf(player.getLocation().getWorld().getName()));
         string = string.replace("{ServerPlayers}", String.valueOf(Bukkit.getServer().getOnlinePlayers().size()));
+        string = string.replace("{PlayerName}", String.valueOf(player.getDisplayName()));
+
+        return string;
+    }
+
+    /**
+     * Returns the value in the path in the file, replaces color-codes, Player-specific values and one specific Integer
+     * @param path
+     * @param player
+     * @return
+     */
+    public Object getValue(String path, Player player, int numberToReplace) {
+
+        String string = (String) getValue(path, player);
+
+        string = string.replace("{Number}", String.valueOf(numberToReplace));
 
         return string;
     }

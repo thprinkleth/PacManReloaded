@@ -37,7 +37,7 @@ public class CmdSetSpawn implements CommandExecutor {
         }
 
         // Looks if the command which starts with "/setspawn" has any arguments
-        if (args.length == 0) {
+        if (args.length != 0) {
             player.sendMessage((String) instance.getMessageFile().getValue("Commands.SetSpawn.Syntax"));
             return true;
         }

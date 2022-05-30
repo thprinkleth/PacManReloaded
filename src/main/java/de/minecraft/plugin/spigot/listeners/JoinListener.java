@@ -1,6 +1,7 @@
 package de.minecraft.plugin.spigot.listeners;
 
 import de.minecraft.plugin.spigot.PacMan;
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -18,9 +19,13 @@ public class JoinListener implements Listener {
 
         Player player = event.getPlayer();
 
-        // Teleports the player directly after joining the server
-        player.teleport(instance.getLocationFile().getLocation("Spawn.SpawnPoint.AllPlayers"));
         // Sets the message which will be sent to the chat
         event.setJoinMessage((String) instance.getMessageFile().getValue("World.Join", player));
+
+        // Teleports the player directly after joining the server
+        try {
+            player.teleport(instance.getLocationFile().getLocation("Spawn.SpawnPoint.AllPlayers"));
+        } catch (NullPointerException ex) {
+        }
     }
 }
