@@ -3,10 +3,17 @@ package de.minecraft.plugin.spigot;
 import de.minecraft.plugin.spigot.cmds.CmdSetSpawn;
 import de.minecraft.plugin.spigot.listeners.JoinListener;
 import de.minecraft.plugin.spigot.util.FileManager;
+import de.minecraft.plugin.spigot.util.ItemBuilder;
 import org.bukkit.Bukkit;
+import org.bukkit.Material;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.PotionMeta;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.potion.PotionData;
+import org.bukkit.potion.PotionType;
 
 import java.io.IOException;
 
@@ -18,8 +25,10 @@ public class PacMan extends JavaPlugin {
 
     private int cooldownScheduler = 0;
 
+    private Inventory powerupInventory;
+
     /**
-     * Is executed when starting the server, after the onLoad() function
+     * Is executed when starting the server
      */
     @Override
     public void onEnable() {
@@ -75,10 +84,18 @@ public class PacMan extends JavaPlugin {
             messageFile.getFileConfig().set("Commands.SetSpawn.Syntax", "&cSyntax: &7/setSpawn");
             messageFile.getFileConfig().set("Commands.SetSpawn.Success", "&aDu hast den Spawnpunkt erfolgreich gesetzt. &7X: {XValue}, Y: {YValue}, Z: {ZValue}");
 
+            messageFile.getFileConfig().set("Commands.SetPowerup.Syntax", "&cSyntax: &7/setPowerup");
+            messageFile.getFileConfig().set("Commands.SetPowerup.ItemGiven", "&aDu hast das Item, mit dem du PowerUps setzen kannst, bekommen.");
+
             messageFile.getFileConfig().set("Commands.NoPerm", "&cDu hast keine Rechte diesen Befehl auszufuehren.");
 
             messageFile.getFileConfig().set("World.Join", "&aDer Spieler &7{PlayerName} &aist dem Server beigetreten. &7({ServerPlayers})");
             messageFile.getFileConfig().set("World.Quit", "&cDer Spieler &7{PlayerName} &cist von dem Server gegangen. &7({ServerPlayers})");
+
+            messageFile.getFileConfig().set("Inventory.PowerUpInventory.Name", "&aWaehle ein PowerUp aus");
+
+            messageFile.getFileConfig().set("Items.PowerUp.Name", "&bPowerUp");
+            messageFile.getFileConfig().set("Items.PowerUp.Lore", "&7Rechtsklick auf einen Block um das PowerUp-Inventar zu setzen");
 
             try {
                 messageFile.getFileConfig().save(messageFile.getFile());
@@ -121,6 +138,30 @@ public class PacMan extends JavaPlugin {
                 }
             }
         }, 0, 20);
+    }
+
+    private void initInventories() {
+
+        powerupInventory = Bukkit.getServer().createInventory(null, 3 * 9, (String) getMessageFile().getValue("Inventory.PowerUpInventory.Name"));
+
+        // Speed
+        ItemStack potion = new ItemStack(Material.POTION);
+        PotionMeta potionMeta = ((PotionMeta) potion.getItemMeta());
+        potionMeta.setBasePotionData(new PotionData(PotionType.SPEED, false, false));
+        potion.setItemMeta(potionMeta);
+
+        ItemStack invPotion = new ItemBuilder(potion).setName("").addLoreLine("").toItemStack();
+
+        powerupInventory.setItem(9 + 3, invPotion);
+
+        // Invincibility
+
+        // Ghost eating
+
+        // Add life
+
+        // Double Points
+
     }
 
     public static PacMan getInstance() {
