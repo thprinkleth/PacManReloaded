@@ -97,6 +97,30 @@ public class PacMan extends JavaPlugin {
             messageFile.getFileConfig().set("Items.PowerUp.Name", "&bPowerUp");
             messageFile.getFileConfig().set("Items.PowerUp.Lore", "&7Rechtsklick auf einen Block um das PowerUp-Inventar zu setzen");
 
+            messageFile.getFileConfig().set("Inventory.PowerUp.Speed.Name", "&bSpeed");
+            messageFile.getFileConfig().set("Inventory.PowerUp.Speed.Lore", "&7Setze PowerUp für Speed");
+            messageFile.getFileConfig().set("Inventory.PowerUp.Invincibility.Name", "&bInvincibility");
+            messageFile.getFileConfig().set("Inventory.PowerUp.Invincibility.Lore", "&7Setze PowerUp für Invincibility");
+            messageFile.getFileConfig().set("Inventory.PowerUp.GhostEating.Name", "&bStrength");
+            messageFile.getFileConfig().set("Inventory.PowerUp.GhostEating.Lore", "&7Setze PowerUp für GhostEating");
+            messageFile.getFileConfig().set("Inventory.PowerUp.AddLife.Name", "&bAdd Life");
+            messageFile.getFileConfig().set("Inventory.PowerUp.AddLife.Lore", "&7Setze PowerUp für Add Life");
+            messageFile.getFileConfig().set("Inventory.PowerUp.DoublePoints.Name", "&bDouble Points");
+            messageFile.getFileConfig().set("Inventory.PowerUp.DoublePoints.Lore", "&7Setze PowerUp für Double Points");
+
+
+            messageFile.getFileConfig().set("Game.PowerUp.Speed.Amount", "0");
+            messageFile.getFileConfig().set("Game.PowerUp.Invincibility.Amount", "0");
+            messageFile.getFileConfig().set("Game.PowerUp.GhostEating.Amount", "0");
+            messageFile.getFileConfig().set("Game.PowerUp.AddLife.Amount", "0");
+            messageFile.getFileConfig().set("Game.DoublePoints.AddLife.Amount", "0");
+
+            messageFile.getFileConfig().set("SetUp.PowerUp.Speed.SetLocation.Success", "&aDie {Number}te Location für das Speed-PowerUp wurde gesetzt. &7X: {XValue}, Y: {YValue}, Z: {ZValue}");
+            messageFile.getFileConfig().set("Setup.PowerUp.Invincibility.SetLocation.Success", "&aDie {Number}te Location für das Invincibility-PowerUp wurde gesetzt. &7X: {XValue}, Y: {YValue}, Z: {ZValue}");
+            messageFile.getFileConfig().set("Setup.PowerUp.GhostEating.SetLocation.Success", "&aDie {Number}te Location für das GhostEating-PowerUp wurde gesetzt. &7X: {XValue}, Y: {YValue}, Z: {ZValue}");
+            messageFile.getFileConfig().set("Setup.PowerUp.AddLife.SetLocation.Success", "&aDie {Number}te Location für das AddLife-PowerUp wurde gesetzt. &7X: {XValue}, Y: {YValue}, Z: {ZValue}");
+            messageFile.getFileConfig().set("Setup.PowerUp.DoublePoints.SetLocation.Success", "&aDie {Number}te Location für das DoublePoints-PowerUp wurde gesetzt. &7X: {XValue}, Y: {YValue}, Z: {ZValue}");
+
             try {
                 messageFile.getFileConfig().save(messageFile.getFile());
             } catch (IOException e) {
@@ -150,11 +174,22 @@ public class PacMan extends JavaPlugin {
         potionMeta.setBasePotionData(new PotionData(PotionType.SPEED, false, false));
         potion.setItemMeta(potionMeta);
 
-        ItemStack invPotion = new ItemBuilder(potion).setName("").addLoreLine("").toItemStack();
+            ItemStack invPotion = new ItemBuilder(potion).setName(getMessageFile().getValue("Inventory.PowerUp.Speed.Name").toString()).addLoreLine(getMessageFile().getValue("Inventory.PowerUp.Speed.Lore").toString()).toItemStack();
 
-        powerupInventory.setItem(9 + 3, invPotion);
+            powerupInventory.setItem(8 + 3, invPotion);
+        }
 
         // Invincibility
+        {
+            ItemStack potion = new ItemStack(Material.POTION);
+            PotionMeta potionMeta = ((PotionMeta) potion.getItemMeta());
+            potionMeta.setBasePotionData(new PotionData(PotionType.FIRE_RESISTANCE, false, false));
+            potion.setItemMeta(potionMeta);
+
+            ItemStack invPotion = new ItemBuilder(potion).setName(getMessageFile().getValue("Inventory.PowerUp.Invincibility.Name").toString()).addLoreLine(getMessageFile().getValue("Inventory.PowerUp.Invincibility.Lore").toString()).toItemStack();
+
+            powerupInventory.setItem(8 + 3, invPotion);
+        }
 
         // Ghost eating
 
