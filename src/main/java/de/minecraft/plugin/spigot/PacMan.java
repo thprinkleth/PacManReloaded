@@ -81,8 +81,9 @@ public class PacMan extends JavaPlugin {
             messageFile.getFileConfig().set("Server.ShutDown.Message", "&cDas Plugin wurde gestoppt. &7[PacMan]");
 
             messageFile.getFileConfig().set("Commands.NoPlayer", "&cDer Befehl kann nur von einem Spieler ausgefuehrt werden.");
-            messageFile.getFileConfig().set("Commands.SetSpawn.Syntax", "&cSyntax: &7/setSpawn");
-            messageFile.getFileConfig().set("Commands.SetSpawn.Success", "&aDu hast den Spawnpunkt erfolgreich gesetzt. &7X: {XValue}, Y: {YValue}, Z: {ZValue}");
+            messageFile.getFileConfig().set("Commands.SetSpawn.Syntax", "&cSyntax: &7/setSpawn <Lobby/Ghosts/PacMan>");
+            messageFile.getFileConfig().set("Commands.SetSpawn.AllPlayers.Success", "&aDu hast den Spawnpunkt für die Lobby erfolgreich gesetzt. &7X: {XValue}, Y: {YValue}, Z: {ZValue}");
+            messageFile.getFileConfig().set("Commands.SetSpawn.Ghosts.Success", "&aDu hast den Spawnpunkt für die Geister erfolgreich gesetzt. &7X: {XValue}, Y: {YValue}, Z: {ZValue}");
 
             messageFile.getFileConfig().set("Commands.SetPowerup.Syntax", "&cSyntax: &7/setPowerup");
             messageFile.getFileConfig().set("Commands.SetPowerup.ItemGiven", "&aDu hast das Item, mit dem du PowerUps setzen kannst, bekommen.");
@@ -92,7 +93,7 @@ public class PacMan extends JavaPlugin {
             messageFile.getFileConfig().set("World.Join", "&aDer Spieler &7{PlayerName} &aist dem Server beigetreten. &7({ServerPlayers})");
             messageFile.getFileConfig().set("World.Quit", "&cDer Spieler &7{PlayerName} &cist von dem Server gegangen. &7({ServerPlayers})");
 
-            messageFile.getFileConfig().set("Inventory.PowerUpInventory.Name", "&aWaehle ein PowerUp aus");
+            messageFile.getFileConfig().set("Inventory.PowerUpInventory.Name", "&aW#hle ein PowerUp aus");
 
             messageFile.getFileConfig().set("Items.PowerUp.Name", "&bPowerUp");
             messageFile.getFileConfig().set("Items.PowerUp.Lore", "&7Rechtsklick auf einen Block um das PowerUp-Inventar zu setzen");
@@ -169,10 +170,11 @@ public class PacMan extends JavaPlugin {
         powerupInventory = Bukkit.getServer().createInventory(null, 3 * 9, (String) getMessageFile().getValue("Inventory.PowerUpInventory.Name"));
 
         // Speed
-        ItemStack potion = new ItemStack(Material.POTION);
-        PotionMeta potionMeta = ((PotionMeta) potion.getItemMeta());
-        potionMeta.setBasePotionData(new PotionData(PotionType.SPEED, false, false));
-        potion.setItemMeta(potionMeta);
+        {
+            ItemStack potion = new ItemStack(Material.POTION);
+            PotionMeta potionMeta = ((PotionMeta) potion.getItemMeta());
+            potionMeta.setBasePotionData(new PotionData(PotionType.SPEED, false, false));
+            potion.setItemMeta(potionMeta);
 
             ItemStack invPotion = new ItemBuilder(potion).setName(getMessageFile().getValue("Inventory.PowerUp.Speed.Name").toString()).addLoreLine(getMessageFile().getValue("Inventory.PowerUp.Speed.Lore").toString()).toItemStack();
 
@@ -192,11 +194,40 @@ public class PacMan extends JavaPlugin {
         }
 
         // Ghost eating
+        {
+            ItemStack potion = new ItemStack(Material.POTION);
+            PotionMeta potionMeta = ((PotionMeta) potion.getItemMeta());
+            potionMeta.setBasePotionData(new PotionData(PotionType.STRENGTH, false, false));
+            potion.setItemMeta(potionMeta);
+
+            ItemStack invPotion = new ItemBuilder(potion).setName(getMessageFile().getValue("Inventory.PowerUp.GhostEating.Name").toString()).addLoreLine(getMessageFile().getValue("Inventory.PowerUp.GhostEating.Lore").toString()).toItemStack();
+
+            powerupInventory.setItem(8 + 5, invPotion);
+        }
 
         // Add life
+        {
+            ItemStack potion = new ItemStack(Material.POTION);
+            PotionMeta potionMeta = ((PotionMeta) potion.getItemMeta());
+            potionMeta.setBasePotionData(new PotionData(PotionType.REGEN, false, false));
+            potion.setItemMeta(potionMeta);
+
+            ItemStack invPotion = new ItemBuilder(potion).setName(getMessageFile().getValue("Inventory.PowerUp.AddLife.Name").toString()).addLoreLine(getMessageFile().getValue("Inventory.PowerUp.AddLife.Lore").toString()).toItemStack();
+
+            powerupInventory.setItem(8 + 6, invPotion);
+        }
 
         // Double Points
+        {
+            ItemStack potion = new ItemStack(Material.POTION);
+            PotionMeta potionMeta = ((PotionMeta) potion.getItemMeta());
+            potionMeta.setBasePotionData(new PotionData(PotionType.LUCK, false, false));
+            potion.setItemMeta(potionMeta);
 
+            ItemStack invPotion = new ItemBuilder(potion).setName(getMessageFile().getValue("Inventory.PowerUp.DoublePoints.Name").toString()).addLoreLine(getMessageFile().getValue("Inventory.PowerUp.DoublePoints.Lore").toString()).toItemStack();
+
+            powerupInventory.setItem(8 + 7, invPotion);
+        }
     }
 
     public static PacMan getInstance() {
@@ -213,5 +244,9 @@ public class PacMan extends JavaPlugin {
 
     public int getCooldownScheduler() {
         return cooldownScheduler;
+    }
+
+    public Inventory getPowerupInventory() {
+        return powerupInventory;
     }
 }
