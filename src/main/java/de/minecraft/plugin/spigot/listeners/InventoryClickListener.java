@@ -24,6 +24,8 @@ public class InventoryClickListener implements Listener {
                 int slot = event.getSlot();
                 int amount = 0;
 
+                // todo: nicht spezifisch powerup setzen, sondern allgemeiner powerupspawn
+
                 switch (slot) {
                     case (8 + 3):
                         amount = (int) instance.getMessageFile().getValue("Game.PowerUp.Speed.Amount");

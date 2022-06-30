@@ -136,33 +136,7 @@ public class PacMan extends JavaPlugin {
      */
     public void countdown() {
 
-        int onlinePlayersAmount = Bukkit.getServer().getOnlinePlayers().size();
 
-        cooldownScheduler = Bukkit.getScheduler().scheduleSyncRepeatingTask(instance, new Runnable() {
-
-            int countdown = 60 * 5;
-            int pastCountdown = 0;
-
-            @Override
-            public void run() {
-                if (onlinePlayersAmount >= 5) {
-                    if (pastCountdown % 60 == 0 || pastCountdown == countdown - 30 || pastCountdown == countdown - 20 || pastCountdown == countdown - 15 || pastCountdown == countdown - 10 ||
-                            pastCountdown == countdown - 5 || pastCountdown == countdown - 4 || pastCountdown == countdown - 3 || pastCountdown == countdown - 2 || pastCountdown == countdown - 1) {
-
-                        // Sends every person on the server the message at every minute, 30 seconds, 20 seconds, 15 seconds, 10 seconds, 5 seconds, 4 seconds, 3 seconds, 2 seconds and 1 seconds
-
-                        for (Player player : Bukkit.getOnlinePlayers()) {
-                            player.sendMessage((String) getMessageFile().getValue("Lobby.Cooldown.Counting", player, pastCountdown / 60));
-                        }
-                    }
-                    pastCountdown++;
-                } else if (pastCountdown == countdown) {
-                    Bukkit.getScheduler().cancelTask(cooldownScheduler);
-                } else {
-                    pastCountdown = 0;
-                }
-            }
-        }, 0, 20);
     }
 
     private void initInventories() {
