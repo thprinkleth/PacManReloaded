@@ -6,11 +6,13 @@ import de.minecraft.plugin.spigot.listeners.JoinListener;
 import de.minecraft.plugin.spigot.role.RoleHandler;
 import de.minecraft.plugin.spigot.util.FileManager;
 import org.bukkit.Bukkit;
+import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.IOException;
+import java.util.ArrayList;
 
 public class PacMan extends JavaPlugin {
 
@@ -18,6 +20,8 @@ public class PacMan extends JavaPlugin {
     private FileManager messageFile;
     private FileManager locationFile;
     private RoleHandler roleHandler;
+
+    private ArrayList <Player> playerList;
 
     private Inventory setupInventory;
 
@@ -31,6 +35,7 @@ public class PacMan extends JavaPlugin {
         messageFile = new FileManager("messages.yml");
         locationFile = new FileManager("locations.yml");
         roleHandler = new RoleHandler();
+        playerList = new ArrayList<>();
 
         defaultMessage();
 
@@ -86,7 +91,7 @@ public class PacMan extends JavaPlugin {
             messageFile.getFileConfig().set("World.Join", "&aDer Spieler &7{PlayerName} &aist dem Server beigetreten. &7({ServerPlayers})");
             messageFile.getFileConfig().set("World.Quit", "&cDer Spieler &7{PlayerName} &cist von dem Server gegangen. &7({ServerPlayers})");
 
-            messageFile.getFileConfig().set("Inventory.SetupInventory.Name", "&aW#hle ein PowerUp aus");
+            messageFile.getFileConfig().set("Inventory.SetupInventory.Name", "&aSetze die Position für irgentwas keine Ahnung");
 
             messageFile.getFileConfig().set("Items.Setup.Name", "&bLocationSetter");
             messageFile.getFileConfig().set("Items.Setup.Lore", "&7Rechtsklick auf einen Block um das Location-Inventar zu öffnen.");
@@ -112,6 +117,7 @@ public class PacMan extends JavaPlugin {
 
         setupInventory = Bukkit.getServer().createInventory(null, 3 * 9, (String) getMessageFile().getValue("Inventory.SetupInventory.Name"));
 
+
     }
 
     public static PacMan getInstance() {
@@ -132,6 +138,10 @@ public class PacMan extends JavaPlugin {
 
     public RoleHandler getRoleHandler() {
         return roleHandler;
+    }
+
+    public ArrayList<Player> getPlayerList() {
+        return playerList;
     }
 }
 

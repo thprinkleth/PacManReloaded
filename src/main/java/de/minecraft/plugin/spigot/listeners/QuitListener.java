@@ -12,6 +12,7 @@ public class QuitListener implements Listener {
     @EventHandler
     public void onQuit(PlayerQuitEvent event){
         Player player = event.getPlayer();
+        instance.getPlayerList().remove(player);
         event.setQuitMessage((String)instance.getMessageFile().getValue("World.Quit", player));
     }
 }

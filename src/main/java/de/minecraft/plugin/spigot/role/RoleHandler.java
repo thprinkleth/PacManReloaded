@@ -6,13 +6,13 @@ import java.util.HashMap;
 
 public class RoleHandler {
 
-    private HashMap<Player, Role> playerRoles;
+    private HashMap<Player, String> playerRoles;
 
     public RoleHandler() {
         this.playerRoles = new HashMap<>();
     }
 
-    public HashMap<Player, Role> getPlayerRoles() {
+    public HashMap<Player, String> getPlayerRoles() {
         return playerRoles;
     }
 }

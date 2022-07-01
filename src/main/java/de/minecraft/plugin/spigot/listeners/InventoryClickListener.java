@@ -42,7 +42,7 @@ public class InventoryClickListener implements Listener {
                         break;
                     case ghostLocationSlot:
                         location = player.getTargetBlock(null, 5).getLocation();
-                        instance.getLocationFile().setSpawn("Game.Location.Ghosts", location);
+                        instance.getLocationFile().setSpawn("Game.Location.Ghost", location);
                         player.sendMessage(instance.getMessageFile().getValue("Setup.Spawn.Set.Ghosts.Success", player).toString());
                         break;
                     case pacmanLocationSlot:

@@ -19,6 +19,8 @@ public class JoinListener implements Listener {
 
         Player player = event.getPlayer();
 
+        instance.getPlayerList().add(player);
+
         // Sets the message which will be sent to the chat
         event.setJoinMessage((String) instance.getMessageFile().getValue("World.Join", player));
 
