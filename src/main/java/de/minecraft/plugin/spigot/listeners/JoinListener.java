@@ -26,7 +26,6 @@ public class JoinListener implements Listener {
 
         // Sets the message which will be sent to the chat
         event.setJoinMessage((String) instance.getMessageFile().getValue("World.Join", player));
-
         // Teleports the player directly after joining the server
         try {
             player.teleport(instance.getLocationFile().getLocation("Game.Location.Lobby"));

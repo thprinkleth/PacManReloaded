@@ -2,6 +2,8 @@ package de.minecraft.plugin.spigot;
 
 import de.minecraft.plugin.spigot.cmds.CmdSetup;
 import de.minecraft.plugin.spigot.cmds.CmdStart;
+import de.minecraft.plugin.spigot.gamestate.GameState;
+import de.minecraft.plugin.spigot.gamestate.GameStateManager;
 import de.minecraft.plugin.spigot.listeners.JoinListener;
 import de.minecraft.plugin.spigot.role.RoleHandler;
 import de.minecraft.plugin.spigot.util.FileManager;
@@ -25,18 +27,20 @@ public class PacMan extends JavaPlugin {
 
     private Inventory setupInventory;
 
+    private GameStateManager gameStateManager;
+
     /**
      * Is executed when starting the server
      */
     @Override
     public void onEnable() {
-
         instance = this;
         messageFile = new FileManager("messages.yml");
         locationFile = new FileManager("locations.yml");
         roleHandler = new RoleHandler();
         playerList = new ArrayList<>();
-
+        gameStateManager = new GameStateManager();
+        gameStateManager.setCurrent(GameState.LOBBY_STATE);
         defaultMessage();
 
         registerCommands();
@@ -142,6 +146,10 @@ public class PacMan extends JavaPlugin {
 
     public ArrayList<Player> getPlayerList() {
         return playerList;
+    }
+
+    public GameStateManager getGameStateManager() {
+        return gameStateManager;
     }
 }
 

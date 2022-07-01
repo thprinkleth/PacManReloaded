@@ -1,6 +1,7 @@
 package de.minecraft.plugin.spigot.cmds;
 
 import de.minecraft.plugin.spigot.PacMan;
+import de.minecraft.plugin.spigot.gamestate.GameState;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -60,7 +61,7 @@ public class CmdStart implements CommandExecutor {
                     pastCountdown++;
                 } else if (pastCountdown == countdown) {
                     Bukkit.getScheduler().cancelTask(cooldownScheduler);
-                    // TODO: Start game (GameState change Lobby -> Ingame)
+                    instance.getGameStateManager().setCurrent(GameState.INGAME_STATE);
                 }
             }
         }, 0, 20);
