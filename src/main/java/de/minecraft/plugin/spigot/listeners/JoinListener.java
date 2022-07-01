@@ -2,6 +2,7 @@ package de.minecraft.plugin.spigot.listeners;
 
 import de.minecraft.plugin.spigot.PacMan;
 import org.bukkit.Bukkit;
+import org.bukkit.GameMode;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -20,6 +21,8 @@ public class JoinListener implements Listener {
         Player player = event.getPlayer();
 
         instance.getPlayerList().add(player);
+
+        player.setGameMode(GameMode.ADVENTURE);
 
         // Sets the message which will be sent to the chat
         event.setJoinMessage((String) instance.getMessageFile().getValue("World.Join", player));
