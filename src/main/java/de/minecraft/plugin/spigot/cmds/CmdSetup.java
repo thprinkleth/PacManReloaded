@@ -10,14 +10,14 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
-public class CmdSetPowerup implements CommandExecutor {
+public class CmdSetup implements CommandExecutor {
 
     private PacMan instance = PacMan.getInstance();
 
     @Override
     public boolean onCommand(CommandSender cs, Command cmd, String s, String[] args) {
 
-        if (!cmd.getName().equalsIgnoreCase("setPowerup")) {
+        if (!cmd.getName().equalsIgnoreCase("setup")) {
             return true;
         }
 
@@ -28,23 +28,23 @@ public class CmdSetPowerup implements CommandExecutor {
 
         Player player = (Player) cs;
 
-        if (!player.hasPermission("commands.setup.setpowerup")) {
+        if (!player.hasPermission("commands.setup")) {
             player.sendMessage(instance.getMessageFile().getValue("Commands.NoPerm", player).toString());
             return true;
         }
 
         if (args.length != 0) {
-            player.sendMessage(instance.getMessageFile().getValue("Commands.SetPowerUp.Syntax", player).toString());
+            player.sendMessage(instance.getMessageFile().getValue("Commands.Setup.Syntax", player).toString());
             return true;
         }
 
-        String powerUpItemName = instance.getMessageFile().getValue("Items.PowerUp.Name", player).toString();
-        String powerUpItemLore = instance.getMessageFile().getValue("Items.PowerUp.Lore", player).toString();
+        String setupItemName = instance.getMessageFile().getValue("Items.Setup.Name", player).toString();
+        String setupItemLore = instance.getMessageFile().getValue("Items.Setup.Lore", player).toString();
 
-        ItemStack powerUpItem = new ItemBuilder(Material.FEATHER).setName(powerUpItemName).addLoreLine(powerUpItemLore).toItemStack();
+        ItemStack setupItem = new ItemBuilder(Material.FEATHER).setName(setupItemName).addLoreLine(setupItemLore).toItemStack();
 
-        player.setItemInHand(powerUpItem);
-        player.sendMessage(instance.getMessageFile().getValue("Commands.SetPowerUp.ItemGiven", player).toString());
+        player.setItemInHand(setupItem);
+        player.sendMessage(instance.getMessageFile().getValue("Commands.Setup.ItemGiven", player).toString());
 
         return false;
     }

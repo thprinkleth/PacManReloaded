@@ -61,8 +61,6 @@ public class CmdStart implements CommandExecutor {
                 } else if (pastCountdown == countdown) {
                     Bukkit.getScheduler().cancelTask(cooldownScheduler);
                     // TODO: Start game (GameState change Lobby -> Ingame)
-
-
                 }
             }
         }, 0, 20);

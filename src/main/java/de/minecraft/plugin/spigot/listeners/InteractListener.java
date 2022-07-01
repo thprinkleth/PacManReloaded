@@ -19,7 +19,8 @@ public class InteractListener implements Listener {
 
         if (event.getAction() == Action.RIGHT_CLICK_BLOCK) {
             if (player.getItemInHand().getType() == Material.FEATHER && player.getItemInHand().getItemMeta().getDisplayName().equalsIgnoreCase(instance.getMessageFile().getValue("Items.PowerUp.Name").toString())) {
-                player.openInventory(instance.getPowerupInventory());
+                player.openInventory(instance.getSetupInventory());
+                player.updateInventory();
             }
         }
     }

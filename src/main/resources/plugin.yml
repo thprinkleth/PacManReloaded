@@ -5,5 +5,7 @@ authors: [ Jens, Florian, Justus, Vera ]
 description: First Person PacMan in Minecraft
 
 commands:
-  setspawn:
-    description: Sets the Spawn-Location where the Player will end up upon joining the server.
+  setup:
+    description: Gives the executor an item with which he can setup the game.
+  start:
+    description: Starts the countdown to the game.

@@ -104,6 +104,18 @@ public class FileManager {
      * @param path
      * @param location
      */
+    public void setSpawn(String path, Location location) {
+
+        fileConfig.set(path + ".x", location.getX());
+        fileConfig.set(path + ".y", location.getY() + 1);
+        fileConfig.set(path + ".z", location.getZ());
+        fileConfig.set(path + ".yaw", location.getYaw());
+        fileConfig.set(path + ".pitch", location.getPitch());
+        fileConfig.set(path + ".world", location.getWorld().getName());
+
+        saveFile();
+    }
+
     public void setLocation(String path, Location location) {
 
         fileConfig.set(path + ".x", location.getX());

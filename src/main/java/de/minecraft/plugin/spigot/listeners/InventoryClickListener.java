@@ -1,11 +1,11 @@
 package de.minecraft.plugin.spigot.listeners;
 
 import de.minecraft.plugin.spigot.PacMan;
+import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
-import org.bukkit.inventory.ItemStack;
 
 public class InventoryClickListener implements Listener {
 
@@ -19,53 +19,52 @@ public class InventoryClickListener implements Listener {
         event.setCancelled(true);
 
         try {
-            if (event.getClickedInventory() == instance.getPowerupInventory()) {
-                ItemStack clickedItem = event.getCurrentItem();
-                int slot = event.getSlot();
-                int amount = 0;
+            if (event.getClickedInventory() == instance.getSetupInventory()) {
 
-                // todo: nicht spezifisch powerup setzen, sondern allgemeiner powerupspawn
+                int slot = event.getSlot();
+
+                int amountPointLocations = (int) instance.getMessageFile().getValue("Game.Amount.Locations.Points");
+                int amountPowerupLocations = (int) instance.getMessageFile().getValue("Game.Amount.Locations.PowerUps");
+
+                final int lobbyLocationSlot = 2;
+                final int ghostLocationSlot = 4;
+                final int pacmanLocationSlot = 6;
+                final int pointLocationSlot = 8 + 4;
+                final int powerupLocationSlot = 8 + 6;
+
+                Location location;
 
                 switch (slot) {
-                    case (8 + 3):
-                        amount = (int) instance.getMessageFile().getValue("Game.PowerUp.Speed.Amount");
-                        instance.getLocationFile().setLocation("Game.PowerUp.Speed.Location." + amount, player.getLocation());
-                        player.closeInventory();
-                        player.sendMessage(instance.getMessageFile().getValue("SetUp.PowerUp.Speed.SetLocation.Success", player, amount).toString());
-                        instance.getMessageFile().setValue("Game.PowerUp.Speed.Amount", amount + 1);
+                    case lobbyLocationSlot:
+                        location = player.getTargetBlock(null, 5).getLocation();
+                        instance.getLocationFile().setSpawn("Game.Location.Lobby", location);
+                        player.sendMessage(instance.getMessageFile().getValue("Setup.Spawn.Set.Lobby.Success", player).toString());
                         break;
-                    case (8 + 4):
-                        amount = (int) instance.getMessageFile().getValue("Game.PowerUp.Invincibility.Amount");
-                        instance.getLocationFile().setLocation("Game.PowerUp.Invincibility.Location." + amount, player.getLocation());
-                        player.closeInventory();
-                        player.sendMessage(instance.getMessageFile().getValue("SetUp.PowerUp.Invincibility.SetLocation.Success", player, amount).toString());
-                        instance.getMessageFile().setValue("Game.PowerUp.Invincibility.Amount", amount + 1);
+                    case ghostLocationSlot:
+                        location = player.getTargetBlock(null, 5).getLocation();
+                        instance.getLocationFile().setSpawn("Game.Location.Ghosts", location);
+                        player.sendMessage(instance.getMessageFile().getValue("Setup.Spawn.Set.Ghosts.Success", player).toString());
                         break;
-                    case (8 + 5):
-                        amount = (int) instance.getMessageFile().getValue("Game.PowerUp.GhostEating.Amount");
-                        instance.getLocationFile().setLocation("Game.PowerUp.GhostEating.Location." + amount, player.getLocation());
-                        player.closeInventory();
-                        player.sendMessage(instance.getMessageFile().getValue("SetUp.PowerUp.GhostEating.SetLocation.Success", player, amount).toString());
-                        instance.getMessageFile().setValue("Game.PowerUp.GhostEating.Amount", amount + 1);
+                    case pacmanLocationSlot:
+                        location = player.getTargetBlock(null, 5).getLocation();
+                        instance.getLocationFile().setSpawn("Game.Location.PacMan", location);
+                        player.sendMessage(instance.getMessageFile().getValue("Setup.Spawn.Set.PacMan.Success", player).toString());
                         break;
-                    case (8 + 6):
-                        amount = (int) instance.getMessageFile().getValue("Game.PowerUp.AddLife.Amount");
-                        instance.getLocationFile().setLocation("Game.PowerUp.AddLife.Location." + amount, player.getLocation());
-                        player.closeInventory();
-                        player.sendMessage(instance.getMessageFile().getValue("SetUp.PowerUp.AddLife.SetLocation.Success", player, amount).toString());
-                        instance.getMessageFile().setValue("Game.PowerUp.AddLife.Amount", amount + 1);
+                    case pointLocationSlot:
+                        location = player.getTargetBlock(null, 5).getLocation();
+                        instance.getLocationFile().setSpawn("Game.Location.Point." + amountPointLocations, location);
+                        instance.getMessageFile().setValue("Game.Amount.Locations.Points", amountPointLocations + 1);
+                        player.sendMessage(instance.getMessageFile().getValue("Setup.Spawn.Set.Point.Success", player).toString());
                         break;
-                    case (8 + 7):
-                        amount = (int) instance.getMessageFile().getValue("Game.PowerUp.DoublePoints.Amount");
-                        instance.getLocationFile().setLocation("Game.PowerUp.DoublePoints.Location." + amount, player.getLocation());
-                        player.closeInventory();
-                        player.sendMessage(instance.getMessageFile().getValue("SetUp.PowerUp.DoublePoints.SetLocation.Success", player, amount).toString());
-                        instance.getMessageFile().setValue("Game.PowerUp.DoublePoints.Amount", amount + 1);
+                    case powerupLocationSlot:
+                        location = player.getTargetBlock(null, 5).getLocation();
+                        instance.getLocationFile().setSpawn("Game.Location.PowerUp." + amountPointLocations, location);
+                        instance.getMessageFile().setValue("Game.Amount.Locations.PowerUps", amountPowerupLocations + 1);
+                        player.sendMessage(instance.getMessageFile().getValue("Setup.Spawn.Set.PowerUp.Success", player).toString());
                         break;
-                    }
-
                 }
-            } catch(NullPointerException ex){
             }
+        } catch (NullPointerException ex) {
         }
     }
+}

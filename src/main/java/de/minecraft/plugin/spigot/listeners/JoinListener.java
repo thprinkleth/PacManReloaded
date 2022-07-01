@@ -24,7 +24,7 @@ public class JoinListener implements Listener {
 
         // Teleports the player directly after joining the server
         try {
-            player.teleport(instance.getLocationFile().getLocation("Spawn.SpawnPoint.AllPlayers"));
+            player.teleport(instance.getLocationFile().getLocation("Game.Location.Lobby"));
         } catch (NullPointerException ex) {
         }
     }
