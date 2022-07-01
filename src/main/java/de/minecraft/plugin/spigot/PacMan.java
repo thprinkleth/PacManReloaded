@@ -3,6 +3,7 @@ package de.minecraft.plugin.spigot;
 import de.minecraft.plugin.spigot.cmds.CmdSetup;
 import de.minecraft.plugin.spigot.cmds.CmdStart;
 import de.minecraft.plugin.spigot.listeners.JoinListener;
+import de.minecraft.plugin.spigot.role.RoleHandler;
 import de.minecraft.plugin.spigot.util.FileManager;
 import org.bukkit.Bukkit;
 import org.bukkit.inventory.Inventory;
@@ -16,6 +17,7 @@ public class PacMan extends JavaPlugin {
     private static PacMan instance;
     private FileManager messageFile;
     private FileManager locationFile;
+    private RoleHandler roleHandler;
 
     private Inventory setupInventory;
 
@@ -28,6 +30,7 @@ public class PacMan extends JavaPlugin {
         instance = this;
         messageFile = new FileManager("messages.yml");
         locationFile = new FileManager("locations.yml");
+        roleHandler = new RoleHandler();
 
         defaultMessage();
 
@@ -126,4 +129,9 @@ public class PacMan extends JavaPlugin {
     public Inventory getSetupInventory() {
         return setupInventory;
     }
+
+    public RoleHandler getRoleHandler() {
+        return roleHandler;
+    }
 }
+
