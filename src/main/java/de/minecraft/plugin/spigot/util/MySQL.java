@@ -17,11 +17,15 @@ public class MySQL {
     private final String PASSWORD;
 
     public MySQL(String username, int port, String database, String host, String password) {
+
         this.USERNAME = username;
         this.PORT = port;
         this.DATABASE = database;
         this.HOST = host;
         this.PASSWORD = password;;
+
+        connect();
+        createTable();
     }
 
     private static boolean isConnected() {

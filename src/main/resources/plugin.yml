@@ -9,3 +9,7 @@ commands:
     description: Gives the executor an item with which he can setup the game.
   start:
     description: Starts the countdown to the game.
+  stats:
+    description: Shows the stats of a specific player
+  ranking:
+    description: Shows the stats of the three players with the highest score

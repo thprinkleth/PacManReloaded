@@ -24,6 +24,8 @@ public class EndState extends GameState {
         }
         // Resets the Role-Hashmap to prepare for the next game
         instance.getRoleHandler().getPlayerRoles().clear();
+
+        instance.updateRankingInventory();
     }
 
     /**

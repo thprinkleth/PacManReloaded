@@ -1,12 +1,15 @@
 package de.minecraft.plugin.spigot;
 
+import de.minecraft.plugin.spigot.cmds.CmdRanking;
 import de.minecraft.plugin.spigot.cmds.CmdSetup;
 import de.minecraft.plugin.spigot.cmds.CmdStart;
+import de.minecraft.plugin.spigot.cmds.CmdStats;
 import de.minecraft.plugin.spigot.gamestate.GameState;
 import de.minecraft.plugin.spigot.gamestate.GameStateManager;
 import de.minecraft.plugin.spigot.listeners.*;
 import de.minecraft.plugin.spigot.role.RoleHandler;
 import de.minecraft.plugin.spigot.util.FileManager;
+import de.minecraft.plugin.spigot.util.MySQL;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
@@ -22,12 +25,14 @@ public class PacMan extends JavaPlugin {
     private FileManager messageFile;
     private FileManager locationFile;
     private RoleHandler roleHandler;
+    private GameStateManager gameStateManager;
 
     private ArrayList <Player> playerList;
 
     private Inventory setupInventory;
+    private Inventory rankingInventory;
 
-    private GameStateManager gameStateManager;
+    private MySQL mySQL;
 
     /**
      * Is executed when starting the server
@@ -37,11 +42,13 @@ public class PacMan extends JavaPlugin {
         instance = this;
         messageFile = new FileManager("messages.yml");
         locationFile = new FileManager("locations.yml");
+        defaultMessage();
+        mySQL = new MySQL("", 3306, "", "", ""); // TODO: MySQL-Server
+        gameStateManager = new GameStateManager();
         roleHandler = new RoleHandler();
         playerList = new ArrayList<>();
-        gameStateManager = new GameStateManager();
+        initInventories();
         gameStateManager.setCurrent(GameState.LOBBY_STATE);
-        defaultMessage();
 
         registerCommands();
         registerListeners();
@@ -60,6 +67,8 @@ public class PacMan extends JavaPlugin {
     private void registerCommands() {
         getCommand("setup").setExecutor(new CmdSetup());
         getCommand("start").setExecutor(new CmdStart());
+        getCommand("stats").setExecutor(new CmdStats());
+        getCommand("ranking").setExecutor(new CmdRanking());
     }
 
     /**
@@ -97,6 +106,10 @@ public class PacMan extends JavaPlugin {
 
             messageFile.getFileConfig().set("Commands.Start.Syntax", "&cSyntax: &7/start");
 
+            messageFile.getFileConfig().set("Commands.Ranking.Syntax", "&cSyntax: &7/ranking");
+
+            messageFile.getFileConfig().set("Commands.Stats.Syntax", "&cSyntax: &7/stats <Spielername>");
+
             messageFile.getFileConfig().set("Commands.NoPerm", "&cDu hast keine Rechte diesen Befehl auszufuehren.");
 
             messageFile.getFileConfig().set("World.Join", "&aDer Spieler &7{PlayerName} &aist dem Server beigetreten. &7({ServerPlayers})");
@@ -132,7 +145,7 @@ public class PacMan extends JavaPlugin {
     // Makes the inventory for the setup-itemstack
     private void initInventories() {
 
-        setupInventory = Bukkit.getServer().createInventory(null, 3 * 9, (String) getMessageFile().getValue("Inventory.SetupInventory.Name"));
+        setupInventory = Bukkit.getServer().createInventory(null, 3 * 9, getMessageFile().getValue("Inventory.SetupInventory.Name").toString());
 
         /**
          * TODO:
@@ -141,6 +154,20 @@ public class PacMan extends JavaPlugin {
          * - ItemStack for PacManSpawn
          * - ItemStack for PowerUpSpawn
          * - ItemStack for PointSpawn
+         */
+
+        rankingInventory = Bukkit.getServer().createInventory(null, 3 * 9, getMessageFile().getValue("Inventory.RankingInventory.Name").toString());
+
+        updateRankingInventory();
+    }
+
+    public void updateRankingInventory() {
+        /**
+         * TODO:
+         * - Get top 3 players
+         * - Get their heads
+         * - Get their stats
+         * - Put into slots
          */
     }
 

@@ -27,7 +27,7 @@ public class CmdSetup implements CommandExecutor {
         if (!(cs instanceof Player)) {
             // Sends the console a message that the command executor has to be a player
             Bukkit.getConsoleSender().sendMessage(instance.getMessageFile().getValue("Commands.NoPlayer").toString());
-            return true     ;
+            return true;
         }
 
         // Defines a new object of the Player as the command executor (tested it before so it won't throw a exception)
