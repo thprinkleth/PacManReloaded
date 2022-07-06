@@ -26,7 +26,7 @@ public class DamageListener implements Listener {
         String roleDamager = instance.getRoleHandler().getPlayerRoles().get(damager);
         String rolePlayer = instance.getRoleHandler().getPlayerRoles().get(player);
 
-        if (rolePlayer != "PacMan" || roleDamager != "Ghost") {
+        if (!rolePlayer.equalsIgnoreCase("PacMan" ) || !roleDamager.equalsIgnoreCase("Ghost" )) {
             return;
         }
 
