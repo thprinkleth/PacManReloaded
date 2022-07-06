@@ -10,10 +10,13 @@ import de.minecraft.plugin.spigot.listeners.*;
 import de.minecraft.plugin.spigot.powerup.PickupableItemStacks;
 import de.minecraft.plugin.spigot.role.RoleHandler;
 import de.minecraft.plugin.spigot.util.FileManager;
+import de.minecraft.plugin.spigot.util.ItemBuilder;
 import de.minecraft.plugin.spigot.util.MySQL;
 import org.bukkit.Bukkit;
+import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -137,6 +140,17 @@ public class PacMan extends JavaPlugin {
             messageFile.getFileConfig().set("Lobby.Countdown.Counting", "&aDas Spiel startet in {Number} Sekunde(n).");
             messageFile.getFileConfig().set("Lobby.Countdown.NotEnoughPlayers", "&cEs müssen &6{PlayersNeededToStart} Spieler &cin der Lobby sein, um das Spiel zu starten.");
 
+            messageFile.getFileConfig().set("Inventory.SetupInventory.Items.LobbySpawn.Name", "&6Lobby-spawn");
+            messageFile.getFileConfig().set("Inventory.SetupInventory.Items.LobbySpawn.Lore", "&7Setze die Position, wo die Spieler vor und nach dem Spiel spawnen werden.");
+            messageFile.getFileConfig().set("Inventory.SetupInventory.Items.GhostSpawn.Name", "&6Ghost-spawn");
+            messageFile.getFileConfig().set("Inventory.SetupInventory.Items.GhostSpawn.Lore", "&7Setze die Position, wo die Geister spawnen werden.");
+            messageFile.getFileConfig().set("Inventory.SetupInventory.Items.PacManSpawn.Name", "&6PacMan-spawn");
+            messageFile.getFileConfig().set("Inventory.SetupInventory.Items.PacManSpawn.Lore", "&7Setze die Position, wo PacMan spawnen soll.");
+            messageFile.getFileConfig().set("Inventory.SetupInventory.Items.PowerUpSpawn.Name", "&6PowerUp-spawn");
+            messageFile.getFileConfig().set("Inventory.SetupInventory.Items.PowerUpSpawn.Lore", "&7Setze die Position, wo die PowerUps spawnen sollen.");
+            messageFile.getFileConfig().set("Inventory.SetupInventory.Items.PointSpawn.Name", "&6Point-spawn");
+            messageFile.getFileConfig().set("Inventory.SetupInventory.Items.PointSpawn.Lore", "&7Setze die Position, wo die Points spawnen sollen.");
+
             try {
                 messageFile.getFileConfig().save(messageFile.getFile());
             } catch (IOException e) {
@@ -150,14 +164,30 @@ public class PacMan extends JavaPlugin {
 
         setupInventory = Bukkit.getServer().createInventory(null, 3 * 9, getMessageFile().getValue("Inventory.SetupInventory.Name").toString());
 
-        /**
-         * TODO:
-         * - ItemStack for LobbySpawn
-         * - ItemStack for GhostSpawn
-         * - ItemStack for PacManSpawn
-         * - ItemStack for PowerUpSpawn
-         * - ItemStack for PointSpawn
-         */
+        ItemStack lobbySpawnItemStack = new ItemBuilder(Material.COMPASS)
+                .setName(getMessageFile().getValue("Inventory.SetupInventory.Items.LobbySpawn.Name").toString())
+                .addLoreLine(getMessageFile().getValue("Inventory.SetupInventory.Items.LobbySpawn.Lore").toString()).toItemStack();
+        setupInventory.setItem(2, lobbySpawnItemStack);
+
+        ItemStack ghostSpawnItemStack = new ItemBuilder(Material.TOTEM)
+                .setName(getMessageFile().getValue("Inventory.SetupInventory.Items.GhostSpawn.Name").toString())
+                .addLoreLine(getMessageFile().getValue("Inventory.SetupInventory.Items.GhostSpawn.Lore").toString()).toItemStack();
+        setupInventory.setItem(4, ghostSpawnItemStack);
+
+        ItemStack pacManSpawnItemStack = new ItemBuilder(Material.GOLD_BLOCK)
+                .setName(getMessageFile().getValue("Inventory.SetupInventory.Items.PacManSpawn.Name").toString())
+                .addLoreLine(getMessageFile().getValue("Inventory.SetupInventory.Items.PacManSpawn.Lore").toString()).toItemStack();
+        setupInventory.setItem(6, pacManSpawnItemStack);
+
+        ItemStack powerUpSpawnItemStack = new ItemBuilder(Material.IRON_NUGGET)
+                .setName(getMessageFile().getValue("Inventory.SetupInventory.Items.PowerUpSpawn.Name").toString())
+                .addLoreLine(getMessageFile().getValue("Inventory.SetupInventory.Items.PowerUpSpawn.Lore").toString()).toItemStack();
+        setupInventory.setItem(12, powerUpSpawnItemStack);
+
+        ItemStack pointSpawnItemStack = new ItemBuilder(Material.GOLD_NUGGET)
+                .setName(getMessageFile().getValue("Inventory.SetupInventory.Items.PointSpawn.Name").toString())
+                .addLoreLine(getMessageFile().getValue("Inventory.SetupInventory.Items.PointSpawn.Lore").toString()).toItemStack();
+        setupInventory.setItem(14, pointSpawnItemStack);
 
         rankingInventory = Bukkit.getServer().createInventory(null, 3 * 9, getMessageFile().getValue("Inventory.RankingInventory.Name").toString());
 
