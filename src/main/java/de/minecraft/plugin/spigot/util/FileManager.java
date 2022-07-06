@@ -79,6 +79,7 @@ public class FileManager {
         string = string.replace("{PitchValue}", String.valueOf(player.getLocation().getPitch()));
         string = string.replace("{WorldValue}", String.valueOf(player.getLocation().getWorld().getName()));
         string = string.replace("{ServerPlayers}", String.valueOf(Bukkit.getServer().getOnlinePlayers().size()));
+        string = string.replace("{PlayersNeededToStart}", String.valueOf(getValue("Game.PlayersNeededToStart")));
         string = string.replace("{PlayerName}", String.valueOf(player.getDisplayName()));
 
         return string;

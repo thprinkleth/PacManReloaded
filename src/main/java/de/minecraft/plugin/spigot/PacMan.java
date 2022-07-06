@@ -4,7 +4,7 @@ import de.minecraft.plugin.spigot.cmds.CmdSetup;
 import de.minecraft.plugin.spigot.cmds.CmdStart;
 import de.minecraft.plugin.spigot.gamestate.GameState;
 import de.minecraft.plugin.spigot.gamestate.GameStateManager;
-import de.minecraft.plugin.spigot.listeners.JoinListener;
+import de.minecraft.plugin.spigot.listeners.*;
 import de.minecraft.plugin.spigot.role.RoleHandler;
 import de.minecraft.plugin.spigot.util.FileManager;
 import org.bukkit.Bukkit;
@@ -63,13 +63,18 @@ public class PacMan extends JavaPlugin {
     }
 
     /**
-     * Activates the Listeners
+     * Activates the listeners
      */
     private void registerListeners() {
 
         PluginManager pluginManager = Bukkit.getPluginManager();
-        pluginManager.registerEvents(new JoinListener(), instance);
-
+        pluginManager.registerEvents(new JoinListener(), this);
+        pluginManager.registerEvents(new CancelledListeners(), this);
+        pluginManager.registerEvents(new DamageListener(), this);
+        pluginManager.registerEvents(new InteractListener(), this);
+        pluginManager.registerEvents(new InventoryClickListener(), this);
+        pluginManager.registerEvents(new PlayerLoginListener(), this);
+        pluginManager.registerEvents(new QuitListener(), this);
     }
 
     /**
@@ -90,6 +95,8 @@ public class PacMan extends JavaPlugin {
             messageFile.getFileConfig().set("Commands.Setup.Syntax", "&cSyntax: &7/setup");
             messageFile.getFileConfig().set("Commands.Setup.ItemGiven", "&aDu hast das Item, mit dem du alle Positionen für das Spiel setzen kannst.");
 
+            messageFile.getFileConfig().set("Commands.Start.Syntax", "&cSyntax: &7/start");
+
             messageFile.getFileConfig().set("Commands.NoPerm", "&cDu hast keine Rechte diesen Befehl auszufuehren.");
 
             messageFile.getFileConfig().set("World.Join", "&aDer Spieler &7{PlayerName} &aist dem Server beigetreten. &7({ServerPlayers})");
@@ -103,11 +110,16 @@ public class PacMan extends JavaPlugin {
             messageFile.getFileConfig().set("Game.Amount.Locations.Points", "0");
             messageFile.getFileConfig().set("Game.Amount.Locations.PowerUps", "0");
 
+            messageFile.getFileConfig().set("Game.PlayersNeededToStart", "5");
+
             messageFile.getFileConfig().set("Setup.Spawn.Set.Lobby.Success", "&aDu hast den Spawnpunkt für die Lobby erfolgreich gesetzt. &7X: {XValue}, Y: {YValue}, Z: {ZValue}");
             messageFile.getFileConfig().set("Setup.Spawn.Set.Ghosts.Success", "&aDu hast den Spawnpunkt für die Geister erfolgreich gesetzt. &7X: {XValue}, Y: {YValue}, Z: {ZValue}");
             messageFile.getFileConfig().set("Setup.Spawn.Set.PacMan.Success", "&aDu hast den Spawnpunkt PacMan erfolgreich gesetzt. &7X: {XValue}, Y: {YValue}, Z: {ZValue}");
             messageFile.getFileConfig().set("Setup.Spawn.Set.Point.Success", "&aDu hast die {Number}te Position für einen Punkt erfolgreich gesetzt. &7X: {XValue}, Y: {YValue}, Z: {ZValue}");
             messageFile.getFileConfig().set("Setup.Spawn.Set.PowerUp.Success", "&aDu hast {Number}te Position für ein Powerup erfolgreich gesetzt. &7X: {XValue}, Y: {YValue}, Z: {ZValue}");
+
+            messageFile.getFileConfig().set("Lobby.Countdown.Counting", "&aDas Spiel startet in {Number} Sekunde(n).");
+            messageFile.getFileConfig().set("Lobby.Countdown.NotEnoughPlayers", "&cEs müssen &6{PlayersNeededToStart} Spieler &cin der Lobby sein, um das Spiel zu starten.");
 
             try {
                 messageFile.getFileConfig().save(messageFile.getFile());
@@ -117,11 +129,19 @@ public class PacMan extends JavaPlugin {
         }
     }
 
+    // Makes the inventory for the setup-itemstack
     private void initInventories() {
 
         setupInventory = Bukkit.getServer().createInventory(null, 3 * 9, (String) getMessageFile().getValue("Inventory.SetupInventory.Name"));
 
-
+        /**
+         * TODO:
+         * - ItemStack for LobbySpawn
+         * - ItemStack for GhostSpawn
+         * - ItemStack for PacManSpawn
+         * - ItemStack for PowerUpSpawn
+         * - ItemStack for PointSpawn
+         */
     }
 
     public static PacMan getInstance() {

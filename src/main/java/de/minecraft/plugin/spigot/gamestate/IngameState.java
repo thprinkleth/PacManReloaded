@@ -15,11 +15,14 @@ public class IngameState extends GameState{
         int playerAmount = Bukkit.getOnlinePlayers().size();
         Random random = new Random();
         int pacManNumberPlayer = random.nextInt(playerAmount);
+        // Selects a random person of the people online and gives him the PacMan-Role
         instance.getRoleHandler().getPlayerRoles().put(instance.getPlayerList().get(pacManNumberPlayer), "PacMan");
-        for(Player player:Bukkit.getOnlinePlayers()){
+        for (Player player : Bukkit.getOnlinePlayers()) {
+            // Gives the rest of the players online the Ghost role
             if(!instance.getRoleHandler().getPlayerRoles().containsKey(player)){
                 instance.getRoleHandler().getPlayerRoles().put(player, "Ghost");
             }
+            // Teleports every player to their specific spawn location in the arena (ghosts to the ghost-spawn, PacMan to the PacMan-spawn
             player.teleport(instance.getLocationFile().getLocation("Game.Location." + instance.getRoleHandler().getPlayerRoles().get(player)));
         }
 

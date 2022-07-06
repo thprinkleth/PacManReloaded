@@ -12,22 +12,22 @@ public class JoinListener implements Listener {
 
     PacMan instance = PacMan.getInstance();
 
-    /**
-     * Runs upon a player joining the server
-     */
+    // Runs upon a player joining the server
     @EventHandler
     public void onJoin(PlayerJoinEvent event) {
 
         Player player = event.getPlayer();
 
+        // Adds the player to the playerlist, so the game-role will be assigned more easily
         instance.getPlayerList().add(player);
 
+        // Sets the gamemode of the player to adventure: can't break/place blocks
         player.setGameMode(GameMode.ADVENTURE);
 
-        // Sets the message which will be sent to the chat
+        // Sends every person on the server a specific message when the player joins
         event.setJoinMessage((String) instance.getMessageFile().getValue("World.Join", player));
-        // Teleports the player directly after joining the server
         try {
+            // Teleports the player directly after joining the server
             player.teleport(instance.getLocationFile().getLocation("Game.Location.Lobby"));
         } catch (NullPointerException ex) {
         }

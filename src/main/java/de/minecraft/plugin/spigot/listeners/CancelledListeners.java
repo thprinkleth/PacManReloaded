@@ -14,6 +14,11 @@ import org.bukkit.event.weather.WeatherChangeEvent;
 
 public class CancelledListeners implements Listener {
 
+    /**
+     * Cancels all the events that could happen and influence the game in a negative way for either
+     * team (PacMan or ghosts)
+     */
+
     @EventHandler
     public void onBreak(BlockBreakEvent event) {
         if (!event.getPlayer().isOp())
@@ -30,17 +35,6 @@ public class CancelledListeners implements Listener {
     public void onDrop(PlayerDropItemEvent event) {
         if (!event.getPlayer().isOp())
             event.setCancelled(true);
-    }
-
-    @EventHandler
-    public void onPickUp(PlayerPickupItemEvent event) {
-        if (!event.getPlayer().isOp())
-            event.setCancelled(true);
-    }
-
-    @EventHandler
-    public void onDamage(EntityDamageByEntityEvent event) {
-        event.setCancelled(true);
     }
 
     @EventHandler
