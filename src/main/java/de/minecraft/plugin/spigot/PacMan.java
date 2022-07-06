@@ -7,6 +7,7 @@ import de.minecraft.plugin.spigot.cmds.CmdStats;
 import de.minecraft.plugin.spigot.gamestate.GameState;
 import de.minecraft.plugin.spigot.gamestate.GameStateManager;
 import de.minecraft.plugin.spigot.listeners.*;
+import de.minecraft.plugin.spigot.powerup.PickupableItemStacks;
 import de.minecraft.plugin.spigot.role.RoleHandler;
 import de.minecraft.plugin.spigot.util.FileManager;
 import de.minecraft.plugin.spigot.util.MySQL;
@@ -26,6 +27,7 @@ public class PacMan extends JavaPlugin {
     private FileManager locationFile;
     private RoleHandler roleHandler;
     private GameStateManager gameStateManager;
+    private PickupableItemStacks pickupableItemStacks;
 
     private ArrayList <Player> playerList;
 
@@ -49,11 +51,12 @@ public class PacMan extends JavaPlugin {
         playerList = new ArrayList<>();
         initInventories();
         gameStateManager.setCurrent(GameState.LOBBY_STATE);
+        pickupableItemStacks = new PickupableItemStacks();
 
         registerCommands();
         registerListeners();
 
-        Bukkit.getConsoleSender().sendMessage((String) messageFile.getValue("Server.StartUp.Message"));
+        Bukkit.getConsoleSender().sendMessage(messageFile.getValue("Server.StartUp.Message").toString());
     }
 
     /**
@@ -61,7 +64,7 @@ public class PacMan extends JavaPlugin {
      */
     @Override
     public void onDisable() {
-        Bukkit.getConsoleSender().sendMessage((String) messageFile.getValue("Server.ShutDown.Message"));
+        Bukkit.getConsoleSender().sendMessage(messageFile.getValue("Server.ShutDown.Message").toString());
     }
 
     private void registerCommands() {
@@ -197,6 +200,10 @@ public class PacMan extends JavaPlugin {
 
     public GameStateManager getGameStateManager() {
         return gameStateManager;
+    }
+
+    public PickupableItemStacks getPickupableItemStacks() {
+        return pickupableItemStacks;
     }
 }
 

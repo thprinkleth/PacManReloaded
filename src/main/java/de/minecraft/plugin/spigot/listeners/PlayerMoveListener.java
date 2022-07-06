@@ -4,14 +4,11 @@ import de.minecraft.plugin.spigot.PacMan;
 import de.minecraft.plugin.spigot.gamestate.IngameState;
 import org.bukkit.Location;
 import org.bukkit.Material;
-import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.player.PlayerMoveEvent;
 
-import javax.swing.plaf.basic.BasicInternalFrameTitlePane;
-
-public class GhostMoveEvent {
+public class PlayerMoveListener {
 
     private PacMan instance = PacMan.getInstance();
 
@@ -25,7 +22,7 @@ public class GhostMoveEvent {
             return;
         }
 
-        if(rolePlayer != "Ghost"){
+        if(!rolePlayer.equalsIgnoreCase("Ghost")){
             return;
         }
 
