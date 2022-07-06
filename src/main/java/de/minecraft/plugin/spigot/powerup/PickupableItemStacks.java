@@ -11,7 +11,7 @@ public class PickupableItemStacks {
         return itemStack;
     }
 
-    public ItemStack PowerUpItemStack() {
+    public ItemStack powerUpItemStack() {
         ItemStack itemStack = new ItemBuilder(Material.IRON_NUGGET).toItemStack();
         return itemStack;
     }

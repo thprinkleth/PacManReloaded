@@ -18,7 +18,7 @@ public class IngameState extends GameState{
     private boolean invinciblePowerUp;
     private boolean doublePointsPowerUp;
 
-    private int score;
+    private int pacManScore;
 
     @Override
     public void start() {
@@ -28,7 +28,7 @@ public class IngameState extends GameState{
         ghostEatingPowerUp = false;
         invinciblePowerUp = false;
         doublePointsPowerUp = false;
-        score = 0;
+        pacManScore = 0;
         Random random = new Random();
         int pacManNumberPlayer = random.nextInt(playerAmount);
         // Selects a random person of the people online and gives him the PacMan-Role
@@ -39,8 +39,8 @@ public class IngameState extends GameState{
             // Gives the rest of the players online the Ghost role
             if(!instance.getRoleHandler().getPlayerRoles().containsKey(player)){
                 instance.getRoleHandler().getPlayerRoles().put(player, "Ghost");
-                player.setHealthScale(20);
-                player.setHealth(20);
+                player.setHealthScale(2);
+                player.setHealth(2);
             }
             player.addPotionEffect(new PotionEffect(PotionEffectType.JUMP, Integer.MAX_VALUE, 250));
             // Teleports every player to their specific spawn location in the arena (ghosts to the ghost-spawn, PacMan to the PacMan-spawn
@@ -94,10 +94,10 @@ public class IngameState extends GameState{
     }
 
     public int getScore() {
-        return score;
+        return pacManScore;
     }
 
     public void addScore(int score) {
-        this.score += score;
+        this.pacManScore += score;
     }
 }
