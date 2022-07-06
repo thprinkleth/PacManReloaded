@@ -28,6 +28,7 @@ public class MySQL {
         return (connection != null);
     }
 
+    // Opens a connection to the MySQL-Server
     public void connect() {
 
         if (isConnected()) {
@@ -44,6 +45,7 @@ public class MySQL {
 
     }
 
+    // Disconnects from the MySQL-Server
     public static void disconnect() {
 
         if (!isConnected()) {
@@ -59,6 +61,7 @@ public class MySQL {
 
     }
 
+    // Updates the database
     public static void update(String query) {
 
         try {
@@ -70,10 +73,12 @@ public class MySQL {
         }
     }
 
+    // Create new table in the MySQL-Database
     public static void createTable() {
         update("CREATE TABLE IF NOT EXISTS `PacMan` (`uid` VARCHAR(64), `uuid` VARCHAR(64), `score` INT(100), `playedGames` INT(100), `winsPacMan` INT(100), `losesPacMan` INT(100), `winsGhost` INT(100), `losesGhost` INT(100), `pacManEaten` INT(100)");
     }
 
+    // Executed an query on the database
     public static ResultSet query(String query) {
 
         ResultSet resultSet = null;
@@ -88,6 +93,7 @@ public class MySQL {
         return resultSet;
     }
 
+    // Checks if the player has already an entry in the database
     public static boolean exists(String uuid) {
 
         ResultSet resultSet = query("SELECT * FROM `PacMan` WHERE `uuid` = '" + uuid + "';");
@@ -103,10 +109,15 @@ public class MySQL {
         return false;
     }
 
+    // Saves the new Highscore of the player in the database
     public static void addScore(String uuid, int achievedScore) {
-        update("UPDATE `PacMan` SET `score` = '" + (getScore(uuid) + achievedScore) + "' WHERE `uuid` = '" + uuid + "';");
+        if (achievedScore < getScore(uuid)) {
+            return;
+        }
+        update("UPDATE `PacMan` SET `score` = '" + achievedScore + "' WHERE `uuid` = '" + uuid + "';");
     }
 
+    // Gets the current Highscore of the player
     public static int getScore(String uuid) {
 
         try {
@@ -120,6 +131,7 @@ public class MySQL {
     }
 
 
+    // Adds one game to the players entry in the database
     public static void addGame(String uuid) {
 
         if (exists(uuid)) {
@@ -129,6 +141,7 @@ public class MySQL {
         }
     }
 
+    // Gets the played games of a player
     public static int getGames(String uuid) {
 
         try {
@@ -143,10 +156,12 @@ public class MySQL {
         return 0;
     }
 
+    // Adds one add as pacman to the players entry in the database
     public static void addWinsPacMan(String uuid) {
         update("UPDATE `PacMan` SET `winsPacMan` = '" + (getWinsPacMan(uuid) + 1) + "' WHERE `uuid` = '" + uuid + "';");
     }
 
+    // Gets the wins as pacman of a player
     public static int getWinsPacMan(String uuid) {
 
         try {
@@ -159,10 +174,12 @@ public class MySQL {
         return 0;
     }
 
+    // Adds one lose as pacman to the players entry in the database
     public static void addLosesPacMan(String uuid) {
         update("UPDATE `PacMan` SET `losesPacMan` = '" + (getLosesPacMan(uuid) + 1) + "' WHERE `uuid` = '" + uuid + "';");
     }
 
+    // Gets the loses as pacman of a player
     public static int getLosesPacMan(String uuid) {
 
         try {
@@ -175,10 +192,12 @@ public class MySQL {
         return 0;
     }
 
+    // Adds one win as a ghost to the players entry in the database
     public static void addWinsGhost(String uuid) {
         update("UPDATE `PacMan` SET `winsGhost` = '" + (getLosesPacMan(uuid) + 1) + "' WHERE `uuid` = '" + uuid + "';");
     }
 
+    // Gets the wins as a ghost of a player
     public static int getWinsGhost(String uuid) {
 
         try {
@@ -191,10 +210,12 @@ public class MySQL {
         return 0;
     }
 
+    // Adds one lose as a ghost to the players entry in the database
     public static void addLosesGhost(String uuid) {
         update("UPDATE `PacMan` SET `losesGhost` = '" + (getLosesPacMan(uuid) + 1) + "' WHERE `uuid` = '" + uuid + "';");
     }
 
+    // Gets the loses as a ghost of a player
     public static int getLosesGhost(String uuid) {
 
         try {
@@ -207,10 +228,12 @@ public class MySQL {
         return 0;
     }
 
+    // Adds one point to the score of PacMans eaten by a ghost to the players entry in the database
     public static void addPacmanEaten(String uuid) {
-        update("UPDATE `PacMan` SET `pacManEaten` = '" + (getLosesPacMan(uuid) + 1) + "' WHERE `uuid` = '" + uuid + "';");
+        update("UPDATE `PacMan` SET `pacManEaten` = '" + (getPacmanEaten(uuid) + 1) + "' WHERE `uuid` = '" + uuid + "';");
     }
 
+    // Gets the score of PacMans eaten by a ghost of a player
     public static int getPacmanEaten(String uuid) {
 
         try {
