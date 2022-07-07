@@ -250,7 +250,7 @@ public class PacMan extends JavaPlugin {
         return powerUpHandler;
     }
 
-    public ScoreHandler getScoreeHandler() {
+    public ScoreHandler getScoreHandler() {
         return scoreeHandler;
     }
 }

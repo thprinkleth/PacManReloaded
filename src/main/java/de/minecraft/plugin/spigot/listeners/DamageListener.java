@@ -41,7 +41,7 @@ public class DamageListener implements Listener {
                 return;
             }
 
-            if (instance.getPowerUpHandler().isInvinciblePowerUp()) {
+            if (instance.getPowerUpHandler().getPowerUpList()[0]) {
                 return;
             }
 
@@ -53,16 +53,18 @@ public class DamageListener implements Listener {
                 player.setHealth(player.getHealth() - 2);
                 for (Player current : Bukkit.getOnlinePlayers()) {
                     current.teleport(instance.getLocationFile().getLocation("Game.Location." + instance.getRoleHandler().getPlayerRoles().get(current)));
-                    current.addPotionEffect(new PotionEffect(PotionEffectType.SLOW, 3 * 20, 200));
+                    current.addPotionEffect(new PotionEffect(PotionEffectType.SLOW, 2 * 20, 200));
+                    current.addPotionEffect(new PotionEffect(PotionEffectType.BLINDNESS, 2 * 20, 200));
                 }
             }
         } else if (roleDamager.equalsIgnoreCase("PacMan")) {
 
-            if (!instance.getPowerUpHandler().isGhostEatingPowerUp()) {
+            if (!instance.getPowerUpHandler().getPowerUpList()[1]) {
                 return;
             }
 
             player.teleport(instance.getLocationFile().getLocation("Game.Location." + instance.getRoleHandler().getPlayerRoles().get(player)));
+            player.addPotionEffect(new PotionEffect(PotionEffectType.SLOW, instance.getPowerUpHandler().getDuration(false), 200));
         }
     }
 }

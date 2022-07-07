@@ -79,7 +79,7 @@ public class MySQL {
 
     // Create new table in the MySQL-Database
     public void createTable() {
-        update("CREATE TABLE IF NOT EXISTS `PacMan` (`uid` VARCHAR(64), `uuid` VARCHAR(64), `score` INT(100), `playedGames` INT(100), `winsPacMan` INT(100), `losesPacMan` INT(100), `winsGhost` INT(100), `losesGhost` INT(100), `pacManEaten` INT(100)");
+        update("CREATE TABLE IF NOT EXISTS `PacMan` (`uid` VARCHAR(64), `uuid` VARCHAR(64) `playedGames` INT(100), `winsPacMan` INT(100), `losesPacMan` INT(100), `winsGhost` INT(100), `losesGhost` INT(100), `pacManEaten` INT(100)");
     }
 
     // Executed an query on the database
@@ -113,27 +113,6 @@ public class MySQL {
         return false;
     }
 
-    // Saves the new Highscore of the player in the database
-    public void addScore(String uuid, int achievedScore) {
-        if (achievedScore < getScore(uuid)) {
-            return;
-        }
-        update("UPDATE `PacMan` SET `score` = '" + achievedScore + "' WHERE `uuid` = '" + uuid + "';");
-    }
-
-    // Gets the current Highscore of the player
-    public int getScore(String uuid) {
-
-        try {
-            ResultSet resultSet = query("SELECT `score` FROM `PacMan` WHERE `uuid` = '" + uuid + "'");
-            if (resultSet.next()) {
-                return resultSet.getInt("score");
-            }
-        } catch (SQLException ex) {}
-
-        return 0;
-    }
-
 
     // Adds one game to the players entry in the database
     public void addGame(String uuid) {
@@ -141,7 +120,7 @@ public class MySQL {
         if (exists(uuid)) {
             update("UPDATE 'PacMan' SET `playedGames` = '" + (getGames(uuid) + 1) + "' WHERE `uuid` = '" + uuid + "';");
         } else {
-            update("INSERT INTO `PacMan` (`uid`, `uuid`, `score`, `playedGames`, `winsPacMan`, `losesPacMan`, `winsGhost`, `losesGhost`, `pacManEaten`) VALUES ('" + Bukkit.getServer().getPlayer(uuid).getName() + "', '" + uuid + "', '0', '1', '0', '0', '0', '0', '0');");
+            update("INSERT INTO `PacMan` (`uid`, `uuid`, `playedGames`, `winsPacMan`, `losesPacMan`, `winsGhost`, `losesGhost`, `pacManEaten`) VALUES ('" + Bukkit.getServer().getPlayer(uuid).getName() + "', '" + uuid + "', '1', '0', '0', '0', '0', '0');");
         }
     }
 
@@ -151,7 +130,7 @@ public class MySQL {
         try {
             ResultSet resultSet = query("SELECT `playedGames` FROM `PacMan` WHERE `uuid` = '" + uuid + "'");
             if (resultSet.next()) {
-                return resultSet.getInt("gamesPlayed");
+                return resultSet.getInt("playedGames");
             }
         } catch (SQLException ex) {
             ex.printStackTrace();
@@ -198,7 +177,7 @@ public class MySQL {
 
     // Adds one win as a ghost to the players entry in the database
     public void addWinsGhost(String uuid) {
-        update("UPDATE `PacMan` SET `winsGhost` = '" + (getLosesPacMan(uuid) + 1) + "' WHERE `uuid` = '" + uuid + "';");
+        update("UPDATE `PacMan` SET `winsGhost` = '" + (getWinsGhost(uuid) + 1) + "' WHERE `uuid` = '" + uuid + "';");
     }
 
     // Gets the wins as a ghost of a player
