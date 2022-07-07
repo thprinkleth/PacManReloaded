@@ -33,17 +33,6 @@ public class CancelledListeners implements Listener {
     }
 
     @EventHandler
-    public void onPickUp(PlayerPickupItemEvent event) {
-        if (!event.getPlayer().isOp())
-            event.setCancelled(true);
-    }
-
-    @EventHandler
-    public void onDamage(EntityDamageByEntityEvent event) {
-        event.setCancelled(true);
-    }
-
-    @EventHandler
     public void onItemMerge(ItemMergeEvent event) {
         event.setCancelled(true);
     }
