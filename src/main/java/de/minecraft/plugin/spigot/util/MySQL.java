@@ -7,9 +7,9 @@ import java.sql.*;
 
 public class MySQL {
 
-    private static PacMan instance = PacMan.getInstance();
+    private PacMan instance = PacMan.getInstance();
 
-    private static Connection connection;
+    private Connection connection;
     private final String USERNAME;
     private final int PORT;
     private final String DATABASE;
@@ -28,7 +28,7 @@ public class MySQL {
         createTable();
     }
 
-    private static boolean isConnected() {
+    private boolean isConnected() {
         return (connection != null);
     }
 
@@ -50,7 +50,7 @@ public class MySQL {
     }
 
     // Disconnects from the MySQL-Server
-    public static void disconnect() {
+    public void disconnect() {
 
         if (!isConnected()) {
             return;
@@ -66,7 +66,7 @@ public class MySQL {
     }
 
     // Updates the database
-    public static void update(String query) {
+    public void update(String query) {
 
         try {
             Statement statement = connection.createStatement();
@@ -78,12 +78,12 @@ public class MySQL {
     }
 
     // Create new table in the MySQL-Database
-    public static void createTable() {
+    public void createTable() {
         update("CREATE TABLE IF NOT EXISTS `PacMan` (`uid` VARCHAR(64), `uuid` VARCHAR(64), `score` INT(100), `playedGames` INT(100), `winsPacMan` INT(100), `losesPacMan` INT(100), `winsGhost` INT(100), `losesGhost` INT(100), `pacManEaten` INT(100)");
     }
 
     // Executed an query on the database
-    public static ResultSet query(String query) {
+    public ResultSet query(String query) {
 
         ResultSet resultSet = null;
 
@@ -98,7 +98,7 @@ public class MySQL {
     }
 
     // Checks if the player has already an entry in the database
-    public static boolean exists(String uuid) {
+    public boolean exists(String uuid) {
 
         ResultSet resultSet = query("SELECT * FROM `PacMan` WHERE `uuid` = '" + uuid + "';");
 
@@ -114,7 +114,7 @@ public class MySQL {
     }
 
     // Saves the new Highscore of the player in the database
-    public static void addScore(String uuid, int achievedScore) {
+    public void addScore(String uuid, int achievedScore) {
         if (achievedScore < getScore(uuid)) {
             return;
         }
@@ -122,7 +122,7 @@ public class MySQL {
     }
 
     // Gets the current Highscore of the player
-    public static int getScore(String uuid) {
+    public int getScore(String uuid) {
 
         try {
             ResultSet resultSet = query("SELECT `score` FROM `PacMan` WHERE `uuid` = '" + uuid + "'");
@@ -136,7 +136,7 @@ public class MySQL {
 
 
     // Adds one game to the players entry in the database
-    public static void addGame(String uuid) {
+    public void addGame(String uuid) {
 
         if (exists(uuid)) {
             update("UPDATE 'PacMan' SET `playedGames` = '" + (getGames(uuid) + 1) + "' WHERE `uuid` = '" + uuid + "';");
@@ -146,7 +146,7 @@ public class MySQL {
     }
 
     // Gets the played games of a player
-    public static int getGames(String uuid) {
+    public int getGames(String uuid) {
 
         try {
             ResultSet resultSet = query("SELECT `playedGames` FROM `PacMan` WHERE `uuid` = '" + uuid + "'");
@@ -161,12 +161,12 @@ public class MySQL {
     }
 
     // Adds one add as pacman to the players entry in the database
-    public static void addWinsPacMan(String uuid) {
+    public void addWinsPacMan(String uuid) {
         update("UPDATE `PacMan` SET `winsPacMan` = '" + (getWinsPacMan(uuid) + 1) + "' WHERE `uuid` = '" + uuid + "';");
     }
 
     // Gets the wins as pacman of a player
-    public static int getWinsPacMan(String uuid) {
+    public int getWinsPacMan(String uuid) {
 
         try {
             ResultSet resultSet = query("SELECT `winsPacMan` FROM `PacMan` WHERE `uuid` = '" + uuid + "'");
@@ -179,12 +179,12 @@ public class MySQL {
     }
 
     // Adds one lose as pacman to the players entry in the database
-    public static void addLosesPacMan(String uuid) {
+    public void addLosesPacMan(String uuid) {
         update("UPDATE `PacMan` SET `losesPacMan` = '" + (getLosesPacMan(uuid) + 1) + "' WHERE `uuid` = '" + uuid + "';");
     }
 
     // Gets the loses as pacman of a player
-    public static int getLosesPacMan(String uuid) {
+    public int getLosesPacMan(String uuid) {
 
         try {
             ResultSet resultSet = query("SELECT `losesPacMan` FROM `PacMan` WHERE `uuid` = '" + uuid + "'");
@@ -197,12 +197,12 @@ public class MySQL {
     }
 
     // Adds one win as a ghost to the players entry in the database
-    public static void addWinsGhost(String uuid) {
+    public void addWinsGhost(String uuid) {
         update("UPDATE `PacMan` SET `winsGhost` = '" + (getLosesPacMan(uuid) + 1) + "' WHERE `uuid` = '" + uuid + "';");
     }
 
     // Gets the wins as a ghost of a player
-    public static int getWinsGhost(String uuid) {
+    public int getWinsGhost(String uuid) {
 
         try {
             ResultSet resultSet = query("SELECT `winsGhost` FROM `PacMan` WHERE `uuid` = '" + uuid + "'");
@@ -215,12 +215,12 @@ public class MySQL {
     }
 
     // Adds one lose as a ghost to the players entry in the database
-    public static void addLosesGhost(String uuid) {
+    public void addLosesGhost(String uuid) {
         update("UPDATE `PacMan` SET `losesGhost` = '" + (getLosesPacMan(uuid) + 1) + "' WHERE `uuid` = '" + uuid + "';");
     }
 
     // Gets the loses as a ghost of a player
-    public static int getLosesGhost(String uuid) {
+    public int getLosesGhost(String uuid) {
 
         try {
             ResultSet resultSet = query("SELECT `losesGhost` FROM `PacMan` WHERE `uuid` = '" + uuid + "'");
@@ -233,12 +233,12 @@ public class MySQL {
     }
 
     // Adds one point to the score of PacMans eaten by a ghost to the players entry in the database
-    public static void addPacmanEaten(String uuid) {
+    public void addPacmanEaten(String uuid) {
         update("UPDATE `PacMan` SET `pacManEaten` = '" + (getPacmanEaten(uuid) + 1) + "' WHERE `uuid` = '" + uuid + "';");
     }
 
     // Gets the score of PacMans eaten by a ghost of a player
-    public static int getPacmanEaten(String uuid) {
+    public int getPacmanEaten(String uuid) {
 
         try {
             ResultSet resultSet = query("SELECT `pacManEaten` FROM `PacMan` WHERE `uuid` = '" + uuid + "'");

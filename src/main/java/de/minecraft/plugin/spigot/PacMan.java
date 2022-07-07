@@ -8,7 +8,9 @@ import de.minecraft.plugin.spigot.gamestate.GameState;
 import de.minecraft.plugin.spigot.gamestate.GameStateManager;
 import de.minecraft.plugin.spigot.listeners.*;
 import de.minecraft.plugin.spigot.powerup.PickupableItemStacks;
+import de.minecraft.plugin.spigot.powerup.PowerUpHandler;
 import de.minecraft.plugin.spigot.role.RoleHandler;
+import de.minecraft.plugin.spigot.score.ScoreHandler;
 import de.minecraft.plugin.spigot.util.FileManager;
 import de.minecraft.plugin.spigot.util.ItemBuilder;
 import de.minecraft.plugin.spigot.util.MySQL;
@@ -31,6 +33,8 @@ public class PacMan extends JavaPlugin {
     private RoleHandler roleHandler;
     private GameStateManager gameStateManager;
     private PickupableItemStacks pickupableItemStacks;
+    private PowerUpHandler powerUpHandler;
+    private ScoreHandler scoreeHandler;
 
     private ArrayList <Player> playerList;
 
@@ -55,6 +59,8 @@ public class PacMan extends JavaPlugin {
         initInventories();
         gameStateManager.setCurrent(GameState.LOBBY_STATE);
         pickupableItemStacks = new PickupableItemStacks();
+        scoreeHandler = new ScoreHandler();
+        powerUpHandler = new PowerUpHandler();
 
         registerCommands();
         registerListeners();
@@ -234,6 +240,18 @@ public class PacMan extends JavaPlugin {
 
     public PickupableItemStacks getPickupableItemStacks() {
         return pickupableItemStacks;
+    }
+
+    public MySQL getMySQL() {
+        return mySQL;
+    }
+
+    public PowerUpHandler getPowerUpHandler() {
+        return powerUpHandler;
+    }
+
+    public ScoreHandler getScoreeHandler() {
+        return scoreeHandler;
     }
 }
 
