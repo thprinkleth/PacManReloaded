@@ -8,6 +8,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.inventory.ItemStack;
 
 public class InteractListener implements Listener {
 
@@ -37,10 +38,17 @@ public class InteractListener implements Listener {
                         player.sendMessage(instance.getMessageFile().getValue("Setup.Spawn.Set.Point.NotSuccess", player).toString());
                         return;
                     }
-
                 }
+
                 // Saves the location as a spawn (y + 1)
                 instance.getLocationFile().setSpawn("Game.Location.Point." + amountPointLocations, location);
+                int x = location.getBlockX();
+                int y = location.getBlockY() + 9;
+                int z = location.getBlockZ();
+
+                Location blockLocation = new Location(location.getWorld(), x, y, z);
+                location.getWorld().getBlockAt(blockLocation).setData((byte)4);
+                location.getWorld().getBlockAt(blockLocation).setType(Material.CONCRETE);
                 // Updates the amount of point-locations so there can exist multiple without overwriting the last location
                 instance.getMessageFile().setValue("Game.Amount.Locations.Points", amountPointLocations + 1);
                 // Sends the player a message that the spawn has been successfully set
