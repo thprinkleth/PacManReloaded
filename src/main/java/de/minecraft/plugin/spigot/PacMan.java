@@ -129,19 +129,22 @@ public class PacMan extends JavaPlugin {
 
             messageFile.getFileConfig().set("Inventory.SetupInventory.Name", "&aSetze die Position für irgentwas keine Ahnung");
 
-            messageFile.getFileConfig().set("Items.Setup.Name", "&bLocationSetter");
+            messageFile.getFileConfig().set("Items.Setup.Name", "&bSetupItem");
             messageFile.getFileConfig().set("Items.Setup.Lore", "&7Rechtsklick auf einen Block um das Location-Inventar zu öffnen.");
+            messageFile.getFileConfig().set("Items.SetupPoint.Name", "&bSetupPoint");
+            messageFile.getFileConfig().set("Items.SetupPoint.Lore", "&7Rechtsklick auf einen Block, um einen Point zu setzen.");
 
             messageFile.getFileConfig().set("Game.Amount.Locations.Points", "0");
             messageFile.getFileConfig().set("Game.Amount.Locations.PowerUps", "0");
 
             messageFile.getFileConfig().set("Game.PlayersNeededToStart", "5");
 
-            messageFile.getFileConfig().set("Setup.Spawn.Set.Lobby.Success", "&aDu hast den Spawnpunkt für die Lobby erfolgreich gesetzt. &7X: {XValue}, Y: {YValue}, Z: {ZValue}");
-            messageFile.getFileConfig().set("Setup.Spawn.Set.Ghosts.Success", "&aDu hast den Spawnpunkt für die Geister erfolgreich gesetzt. &7X: {XValue}, Y: {YValue}, Z: {ZValue}");
-            messageFile.getFileConfig().set("Setup.Spawn.Set.PacMan.Success", "&aDu hast den Spawnpunkt PacMan erfolgreich gesetzt. &7X: {XValue}, Y: {YValue}, Z: {ZValue}");
-            messageFile.getFileConfig().set("Setup.Spawn.Set.Point.Success", "&aDu hast die {Number}te Position für einen Punkt erfolgreich gesetzt. &7X: {XValue}, Y: {YValue}, Z: {ZValue}");
-            messageFile.getFileConfig().set("Setup.Spawn.Set.PowerUp.Success", "&aDu hast {Number}te Position für ein Powerup erfolgreich gesetzt. &7X: {XValue}, Y: {YValue}, Z: {ZValue}");
+            messageFile.getFileConfig().set("Setup.Spawn.Set.Lobby.Success", "&aDu hast den Spawnpunkt für die Lobby erfolgreich gesetzt.");
+            messageFile.getFileConfig().set("Setup.Spawn.Set.Ghosts.Success", "&aDu hast den Spawnpunkt für die Geister erfolgreich gesetzt.");
+            messageFile.getFileConfig().set("Setup.Spawn.Set.PacMan.Success", "&aDu hast den Spawnpunkt PacMan erfolgreich gesetzt.");
+            messageFile.getFileConfig().set("Setup.Spawn.Set.Point.Success", "&aDu hast die {Number}te Position für einen Punkt erfolgreich gesetzt.");
+            messageFile.getFileConfig().set("Setup.Spawn.Set.PowerUp.Success", "&aDu hast {Number}te Position für ein Powerup erfolgreich gesetzt.");
+            messageFile.getFileConfig().set("Setup.Spawn.Set.Point.NotSuccess", "&cDie Location konnte nicht gesetzt werden.");
 
             messageFile.getFileConfig().set("Lobby.Countdown.Counting", "&aDas Spiel startet in {Number} Sekunde(n).");
             messageFile.getFileConfig().set("Lobby.Countdown.NotEnoughPlayers", "&cEs müssen &6{PlayersNeededToStart} Spieler &cin der Lobby sein, um das Spiel zu starten.");

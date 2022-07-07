@@ -40,6 +40,12 @@ public class CmdSetup implements CommandExecutor {
             return true;
         }
 
+        if (args.length == 1 && args[0].equalsIgnoreCase("Point")){
+           ItemStack feather = new ItemBuilder(Material.STICK).setName(instance.getMessageFile().getValue("Items.SetupPoint.Name").toString())
+                    .addLoreLine(instance.getMessageFile().getValue("Items.SetupPoint.Lore").toString()).toItemStack();
+           player.setItemInHand(feather);
+        }
+
         // Looks if the syntax of the command is really "/setup" and not "/setup <arguments>"
         if (args.length != 0) {
             // Sends the player a message if he wrote the wrong syntax
