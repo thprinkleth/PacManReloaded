@@ -20,7 +20,7 @@ public class EndState extends GameState {
         // Teleports every person on the Server to the location set as the lobby
         for (Player player : Bukkit.getOnlinePlayers()) {
             // Teleports every player to the lobby spawn for the ending period
-            player.teleport(instance.getLocationFile().getLocation("Game.Location.Lobby"));
+            player.teleport(instance.getLocationFile().getSpawn("Game.Location.Lobby"));
         }
         // Resets the Role-Hashmap to prepare for the next game
         instance.getRoleHandler().getPlayerRoles().clear();

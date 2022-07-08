@@ -15,9 +15,10 @@ public class GameStateManager {
     }
 
     public void setCurrent(int id){
-        if(current != null){
-            current.stop();
+        if(current == null){
+            return;
         }
+        current.stop();
         current = gameStates[id];
         current.start();
     }

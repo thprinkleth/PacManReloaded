@@ -28,7 +28,7 @@ public class JoinListener implements Listener {
         event.setJoinMessage((String) instance.getMessageFile().getValue("World.Join", player));
         try {
             // Teleports the player directly after joining the server
-            player.teleport(instance.getLocationFile().getLocation("Game.Location.Lobby"));
+            player.teleport(instance.getLocationFile().getSpawn("Game.Location.Lobby"));
         } catch (NullPointerException ex) {
         }
     }

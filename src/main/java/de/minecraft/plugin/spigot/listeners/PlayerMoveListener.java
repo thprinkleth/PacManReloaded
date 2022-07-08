@@ -27,9 +27,8 @@ public class PlayerMoveListener {
         }
 
         double xFrom = event.getFrom().getBlockX();
-        double yFrom = event.getFrom().getBlockY();
+        double yFrom = event.getFrom().getBlockY() + 10;
         double zFrom = event.getFrom().getBlockZ();
-        yFrom += 10;
 
         Location locationFromBlock = new Location(player.getLocation().getWorld(), xFrom, yFrom, zFrom);
         player.getLocation().getWorld().getBlockAt(locationFromBlock).setType(Material.AIR);

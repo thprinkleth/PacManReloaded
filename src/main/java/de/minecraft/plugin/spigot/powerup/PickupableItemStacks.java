@@ -11,6 +11,24 @@ public class PickupableItemStacks {
         return itemStack;
     }
 
+    public ItemStack getPowerUpItemStack(int id) {
+        switch (id) {
+            case 0:
+                return invincibilityPowerUpItemStack();
+            case 1:
+                return eatingGhostPowerUpItemStack();
+            case 2:
+                return speedPowerUpItemStack();
+            case 3:
+                return freezeGhostPowerUpItemStack();
+            case 4:
+                return doublePointsPowerUpItemStack();
+            case 5:
+                return extraLifePowerUpItemStack();
+        }
+        return null;
+    }
+
     public ItemStack speedPowerUpItemStack() {
         ItemStack itemStack = new ItemBuilder(Material.DIAMOND_HOE).toItemStack();
         return itemStack;

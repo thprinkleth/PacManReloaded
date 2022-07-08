@@ -42,32 +42,40 @@ public class InventoryClickListener implements Listener {
                     case lobbyLocationSlot:
                         // Gets the location of the block the player is looking at
                         location = player.getTargetBlock(null, 5).getLocation();
-                        // Saves the location as a spawn (y + 1)
-                        instance.getLocationFile().setSpawn("Game.Location.Lobby", location);
+                        // Saves the location as a spawn
+                        instance.getLocationFile().setLocation("Game.Location.Lobby", location);
                         // Sends the player a message that the spawn has been successfully set
                         player.sendMessage(instance.getMessageFile().getValue("Setup.Spawn.Set.Lobby.Success", player).toString());
                         break;
                     case ghostLocationSlot:
                         // Gets the location of the block the player is looking at
                         location = player.getTargetBlock(null, 5).getLocation();
-                        // Saves the location as a spawn (y + 1)
-                        instance.getLocationFile().setSpawn("Game.Location.Ghost", location);
+                        // Saves the location as a spawn
+                        instance.getLocationFile().setLocation("Game.Location.Ghost", location);
                         // Sends the player a message that the spawn has been successfully set
                         player.sendMessage(instance.getMessageFile().getValue("Setup.Spawn.Set.Ghosts.Success", player).toString());
                         break;
                     case pacmanLocationSlot:
                         // Gets the location of the block the player is looking at
                         location = player.getTargetBlock(null, 5).getLocation();
-                        // Saves the location as a spawn (y + 1)
-                        instance.getLocationFile().setSpawn("Game.Location.PacMan", location);
+                        if (location == instance.getLocationFile().getLocation("Game.Location.PacMan"))
+                        // Saves the location as a spawn
+                        instance.getLocationFile().setLocation("Game.Location.PacMan", location);
                         // Sends the player a message that the spawn has been successfully set
                         player.sendMessage(instance.getMessageFile().getValue("Setup.Spawn.Set.PacMan.Success", player).toString());
                         break;
                     case pointLocationSlot:
                         // Gets the location of the block the player is looking at
                         location = player.getTargetBlock(null, 5).getLocation();
-                        // Saves the location as a spawn (y + 1)
-                        instance.getLocationFile().setSpawn("Game.Location.Point." + amountPointLocations, location);
+                        for (int i = 0; i <= amountPointLocations; i++){
+                            if (location == instance.getLocationFile().getLocation("Game.Location.Point." + i)) {
+                                // Sends the player a message that the spawn has been successfully set
+                                player.sendMessage(instance.getMessageFile().getValue("Setup.Spawn.Set.Point.NotSuccess", player).toString());
+                                return;
+                            }
+                        }
+                        // Saves the location as a spawn
+                        instance.getLocationFile().setLocation("Game.Location.Point." + amountPointLocations, location);
                         // Updates the amount of point-locations so there can exist multiple without overwriting the last location
                         instance.getMessageFile().setValue("Game.Amount.Locations.Points", amountPointLocations + 1);
                         // Sends the player a message that the spawn has been successfully set
@@ -76,8 +84,15 @@ public class InventoryClickListener implements Listener {
                     case powerupLocationSlot:
                         // Gets the location of the block the player is looking at
                         location = player.getTargetBlock(null, 5).getLocation();
-                        // Saves the location as a spawn (y + 1)
-                        instance.getLocationFile().setSpawn("Game.Location.PowerUp." + amountPointLocations, location);
+                        for (int i = 0; i <= amountPowerupLocations; i++){
+                            if (location == instance.getLocationFile().getLocation("Game.Location.PowerUp." + i)) {
+                                // Sends the player a message that the spawn has been successfully set
+                                player.sendMessage(instance.getMessageFile().getValue("Setup.Spawn.Set.PowerUp.NotSuccess", player).toString());
+                                return;
+                            }
+                        }
+                        // Saves the location as a spawn
+                        instance.getLocationFile().setLocation("Game.Location.PowerUp." + amountPointLocations, location);
                         // Updates the amount of powerup-locations so there can exist multiple without overwriting the last location
                         instance.getMessageFile().setValue("Game.Amount.Locations.PowerUps", amountPowerupLocations + 1);
                         // Sends the player a message that the spawn has been successfully set

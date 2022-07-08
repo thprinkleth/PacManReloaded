@@ -105,17 +105,6 @@ public class FileManager {
      * @param path
      * @param location
      */
-    public void setSpawn(String path, Location location) {
-
-        fileConfig.set(path + ".x", location.getX());
-        fileConfig.set(path + ".y", location.getY() + 1);
-        fileConfig.set(path + ".z", location.getZ());
-        fileConfig.set(path + ".yaw", location.getYaw());
-        fileConfig.set(path + ".pitch", location.getPitch());
-        fileConfig.set(path + ".world", location.getWorld().getName());
-
-        saveFile();
-    }
 
     public void setLocation(String path, Location location) {
 
@@ -127,6 +116,23 @@ public class FileManager {
         fileConfig.set(path + ".world", location.getWorld().getName());
 
         saveFile();
+    }
+
+    /**
+     * Returns the location in the path in the file with y += 1
+     * @param path
+     * @return
+     */
+    public Location getSpawn(String path) {
+
+        double x = (double) fileConfig.get(path + ".x");
+        double y = (double) fileConfig.get(path + ".y") + 1;
+        double z = (double) fileConfig.get(path + ".z");
+        float yaw = (float) fileConfig.get(path + ".yaw");
+        float pitch = (float) fileConfig.get(path + ".pitch");
+        String world = (String) fileConfig.get(path + ".world");
+
+        return new Location(Bukkit.getWorld(world), x, y, z, yaw, pitch);
     }
 
     /**

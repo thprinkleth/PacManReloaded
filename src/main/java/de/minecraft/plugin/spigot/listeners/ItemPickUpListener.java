@@ -30,6 +30,15 @@ public class ItemPickUpListener implements Listener {
 
         if (item == instance.getPickupableItemStacks().pointItemStack()) {
             instance.getScoreHandler().addScore(instance.getPowerUpHandler().getPowerUpList()[4]);
+            instance.getScoreHandler().removeOnePointInWorld();
+            if (instance.getScoreHandler().getScore() == 0) {
+                if (instance.getPowerUpHandler().getLevel() == 3) {
+                    instance.getGameStateManager().setCurrent(2);
+                    return;
+                }
+                instance.getPowerUpHandler().addLevel();
+                instance.getGameStateManager().setCurrent(1);
+            }
         } else if (item == instance.getPickupableItemStacks().invincibilityPowerUpItemStack()) {
             activatePowerUp(0, false);
         } else if (item == instance.getPickupableItemStacks().eatingGhostPowerUpItemStack()) {

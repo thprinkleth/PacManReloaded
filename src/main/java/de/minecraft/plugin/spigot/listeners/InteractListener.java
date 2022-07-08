@@ -27,27 +27,27 @@ public class InteractListener implements Listener {
                 // Opens the setup inventory for the player who right-clicked
                 player.openInventory(instance.getSetupInventory());
                 player.updateInventory();
-            }
-            else if (player.getItemInHand().getType() == Material.STICK && player.getItemInHand().getItemMeta().getDisplayName().equalsIgnoreCase(instance.getMessageFile().getValue("Items.SetupPoint.Name").toString())){
+            } else if (player.getItemInHand().getType() == Material.STICK && player.getItemInHand().getItemMeta().getDisplayName().equalsIgnoreCase(instance.getMessageFile().getValue("Items.SetupPoint.Name").toString())){
                 // Gets the location of the block the player is looking at
                 Location location = player.getTargetBlock(null, 5).getLocation();
                 int amountPointLocations = (int) instance.getMessageFile().getValue("Game.Amount.Locations.Points");
                 for (int i = 0; i <= amountPointLocations; i++){
-                    if(location == instance.getLocationFile().getLocation("Game.Location.Point." + i)){
+                    if (location == instance.getLocationFile().getLocation("Game.Location.Point." + i)) {
                         // Sends the player a message that the spawn has been successfully set
                         player.sendMessage(instance.getMessageFile().getValue("Setup.Spawn.Set.Point.NotSuccess", player).toString());
                         return;
                     }
                 }
 
-                // Saves the location as a spawn (y + 1)
-                instance.getLocationFile().setSpawn("Game.Location.Point." + amountPointLocations, location);
+                // Saves the location
+                instance.getLocationFile().setLocation("Game.Location.Point." + amountPointLocations, location);
+
                 int x = location.getBlockX();
                 int y = location.getBlockY() + 9;
                 int z = location.getBlockZ();
 
                 Location blockLocation = new Location(location.getWorld(), x, y, z);
-                location.getWorld().getBlockAt(blockLocation).setData((byte)4);
+                location.getWorld().getBlockAt(blockLocation).setData((byte) 4);
                 location.getWorld().getBlockAt(blockLocation).setType(Material.CONCRETE);
                 // Updates the amount of point-locations so there can exist multiple without overwriting the last location
                 instance.getMessageFile().setValue("Game.Amount.Locations.Points", amountPointLocations + 1);

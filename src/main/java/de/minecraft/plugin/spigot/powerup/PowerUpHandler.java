@@ -64,4 +64,12 @@ public class PowerUpHandler {
         }
         return 10;
     }
+
+    public int getLevel() {
+        return level;
+    }
+
+    public void addLevel() {
+        level++;
+    }
 }

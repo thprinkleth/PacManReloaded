@@ -34,7 +34,7 @@ public class PacMan extends JavaPlugin {
     private GameStateManager gameStateManager;
     private PickupableItemStacks pickupableItemStacks;
     private PowerUpHandler powerUpHandler;
-    private ScoreHandler scoreeHandler;
+    private ScoreHandler scoreHandler;
 
     private ArrayList <Player> playerList;
 
@@ -59,7 +59,7 @@ public class PacMan extends JavaPlugin {
         initInventories();
         gameStateManager.setCurrent(GameState.LOBBY_STATE);
         pickupableItemStacks = new PickupableItemStacks();
-        scoreeHandler = new ScoreHandler();
+        scoreHandler = new ScoreHandler();
         powerUpHandler = new PowerUpHandler();
 
         registerCommands();
@@ -140,11 +140,15 @@ public class PacMan extends JavaPlugin {
             messageFile.getFileConfig().set("Game.PlayersNeededToStart", "5");
 
             messageFile.getFileConfig().set("Setup.Spawn.Set.Lobby.Success", "&aDu hast den Spawnpunkt für die Lobby erfolgreich gesetzt.");
+            messageFile.getFileConfig().set("Setup.Spawn.Set.Lobby.NotSuccess", "&cDie Location konnte nicht gesetzt werden.");
             messageFile.getFileConfig().set("Setup.Spawn.Set.Ghosts.Success", "&aDu hast den Spawnpunkt für die Geister erfolgreich gesetzt.");
+            messageFile.getFileConfig().set("Setup.Spawn.Set.Ghosts.NotSuccess", "&cDie Location konnte nicht gesetzt werden.");
             messageFile.getFileConfig().set("Setup.Spawn.Set.PacMan.Success", "&aDu hast den Spawnpunkt PacMan erfolgreich gesetzt.");
+            messageFile.getFileConfig().set("Setup.Spawn.Set.PacMan.NotSuccess", "&cDie Location konnte nicht gesetzt werden.");
             messageFile.getFileConfig().set("Setup.Spawn.Set.Point.Success", "&aDu hast die {Number}te Position für einen Punkt erfolgreich gesetzt.");
-            messageFile.getFileConfig().set("Setup.Spawn.Set.PowerUp.Success", "&aDu hast {Number}te Position für ein Powerup erfolgreich gesetzt.");
             messageFile.getFileConfig().set("Setup.Spawn.Set.Point.NotSuccess", "&cDie Location konnte nicht gesetzt werden.");
+            messageFile.getFileConfig().set("Setup.Spawn.Set.PowerUp.Success", "&aDu hast {Number}te Position für ein Powerup erfolgreich gesetzt.");
+            messageFile.getFileConfig().set("Setup.Spawn.Set.PowerUp.NotSuccess", "&cDie Location konnte nicht gesetzt werden.");
 
             messageFile.getFileConfig().set("Lobby.Countdown.Counting", "&aDas Spiel startet in {Number} Sekunde(n).");
             messageFile.getFileConfig().set("Lobby.Countdown.NotEnoughPlayers", "&cEs müssen &6{PlayersNeededToStart} Spieler &cin der Lobby sein, um das Spiel zu starten.");
@@ -159,6 +163,11 @@ public class PacMan extends JavaPlugin {
             messageFile.getFileConfig().set("Inventory.SetupInventory.Items.PowerUpSpawn.Lore", "&7Setze die Position, wo die PowerUps spawnen sollen.");
             messageFile.getFileConfig().set("Inventory.SetupInventory.Items.PointSpawn.Name", "&6Point-spawn");
             messageFile.getFileConfig().set("Inventory.SetupInventory.Items.PointSpawn.Lore", "&7Setze die Position, wo die Points spawnen sollen.");
+
+            messageFile.getFileConfig().set("Game.NextLevel.PacMan.Title", "&aDu hast das nächste Level erreicht.");
+            messageFile.getFileConfig().set("Game.NextLevel.PacMan.SubTitle", "&7Neues Level: &6{Number}");
+            messageFile.getFileConfig().set("Game.NextLevel.Ghost.Title", "&cPacMan hat das nächste Level erreicht.");
+            messageFile.getFileConfig().set("Game.NextLevel.Ghost.SubTitle", "&7Neues Level: &6{Number}");
 
             try {
                 messageFile.getFileConfig().save(messageFile.getFile());
@@ -254,7 +263,7 @@ public class PacMan extends JavaPlugin {
     }
 
     public ScoreHandler getScoreHandler() {
-        return scoreeHandler;
+        return scoreHandler;
     }
 }
 

@@ -52,7 +52,7 @@ public class DamageListener implements Listener {
             } else {
                 player.setHealth(player.getHealth() - 2);
                 for (Player current : Bukkit.getOnlinePlayers()) {
-                    current.teleport(instance.getLocationFile().getLocation("Game.Location." + instance.getRoleHandler().getPlayerRoles().get(current)));
+                    current.teleport(instance.getLocationFile().getSpawn("Game.Location." + instance.getRoleHandler().getPlayerRoles().get(current)));
                     current.addPotionEffect(new PotionEffect(PotionEffectType.SLOW, 2 * 20, 200));
                     current.addPotionEffect(new PotionEffect(PotionEffectType.BLINDNESS, 2 * 20, 200));
                 }
@@ -63,7 +63,7 @@ public class DamageListener implements Listener {
                 return;
             }
 
-            player.teleport(instance.getLocationFile().getLocation("Game.Location." + instance.getRoleHandler().getPlayerRoles().get(player)));
+            player.teleport(instance.getLocationFile().getSpawn("Game.Location." + instance.getRoleHandler().getPlayerRoles().get(player)));
             player.addPotionEffect(new PotionEffect(PotionEffectType.SLOW, instance.getPowerUpHandler().getDuration(false), 200));
         }
     }
