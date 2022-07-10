@@ -6,7 +6,7 @@ import java.util.HashMap;
 
 public class RoleHandler {
 
-    private HashMap<Player, String> playerRoles;
+    private final HashMap<Player, String> playerRoles;
 
     public RoleHandler() {
         this.playerRoles = new HashMap<>();

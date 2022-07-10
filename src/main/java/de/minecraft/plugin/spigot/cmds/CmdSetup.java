@@ -12,58 +12,58 @@ import org.bukkit.inventory.ItemStack;
 
 public class CmdSetup implements CommandExecutor {
 
-    private PacMan instance = PacMan.getInstance();
+    private final PacMan INSTANCE = PacMan.getInstance();
 
-    // Is executed once a person sends a message which starts with "/"
+    // Wird ausgeführt, wenn eine Person eine Nachricht schickt, welche mit "/" beginnt
     @Override
     public boolean onCommand(CommandSender cs, Command cmd, String s, String[] args) {
 
-        // Looks if the command executor writes "/setup"
+        // Überprüft, ob der Sender der Nachricht "/setup ..." geschrieben hat
         if (!cmd.getName().equalsIgnoreCase("setup")) {
             return true;
         }
 
-        // Looks if the command executor is a Player
+        // Überprüft, ob der Sender ein Spieler ist (die Konsole kann auch Kommandos schicken)
         if (!(cs instanceof Player)) {
-            // Sends the console a message that the command executor has to be a player
-            Bukkit.getConsoleSender().sendMessage(instance.getMessageFile().getValue("Commands.NoPlayer").toString());
+
+            // Sendet der Konsole eine Nachricht, dass nur ein Spieler das Kommando ausführen kann
+            Bukkit.getConsoleSender().sendMessage(INSTANCE.getMessageFile().getValue("Commands.NoPlayer"));
             return true;
         }
 
-        // Defines a new object of the Player as the command executor (tested it before so it won't throw a exception)
         Player player = (Player) cs;
 
-        // Looks if the player is allowed to perform the command
+        // Überprüft, ob der Spieler die nötigen Rechte hat, um den Befehl auszuführen
         if (!player.hasPermission("commands.setup")) {
-            // Sends the player a message if he's not allowed to send the command
-            player.sendMessage(instance.getMessageFile().getValue("Commands.NoPerm", player).toString());
+
+            // Sendet dem Spieler eine Nachricht, dass er nicht genug Rechte hat
+            player.sendMessage(INSTANCE.getMessageFile().getValue("Commands.NoPerm", player));
             return true;
         }
 
-        if (args.length == 1 && args[0].equalsIgnoreCase("Point")){
-           ItemStack feather = new ItemBuilder(Material.STICK).setName(instance.getMessageFile().getValue("Items.SetupPoint.Name").toString())
-                    .addLoreLine(instance.getMessageFile().getValue("Items.SetupPoint.Lore").toString()).toItemStack();
-           player.setItemInHand(feather);
-        }
-
-        // Looks if the syntax of the command is really "/setup" and not "/setup <arguments>"
+        // Überprüft, ob die Syntax des Commands Argumente enthält (z.B. /setup xyz)
         if (args.length != 0) {
-            // Sends the player a message if he wrote the wrong syntax
-            player.sendMessage(instance.getMessageFile().getValue("Commands.Setup.Syntax", player).toString());
+
+            // Sendet dem Spieler eine Nachricht, dass er die falsche Syntax benutzt hat
+            player.sendMessage(INSTANCE.getMessageFile().getValue("Commands.Setup.Syntax", player));
             return true;
         }
 
-        // Defines variables with the name and lore of the item that will be put into the players hand once he performs the command
-        String setupItemName = instance.getMessageFile().getValue("Items.Setup.Name", player).toString();
-        String setupItemLore = instance.getMessageFile().getValue("Items.Setup.Lore", player).toString();
+        // Speichert Name und Lore des Items ab, welches dem Spieler gleich in die Hand gegeben wird
+        String setupItemName = INSTANCE.getConfigFile().getValue("Items.Setup.Name", player);
+        String setupItemLore = INSTANCE.getConfigFile().getValue("Items.Setup.Lore", player);
 
-        // Creates the item
+        // Erzeugt ein neues Item
         ItemStack setupItem = new ItemBuilder(Material.FEATHER).setName(setupItemName).addLoreLine(setupItemLore).toItemStack();
 
-        // Sets the player the item in the hand
-        player.setItemInHand(setupItem);
-        // Sends the player a message that the command was executed successfully
-        player.sendMessage(instance.getMessageFile().getValue("Commands.Setup.ItemGiven", player).toString());
+        // Erzeugt ein neues Item
+        ItemStack autoCoinSetup = new ItemBuilder(Material.STICK)
+                .setName(INSTANCE.getConfigFile().getValue("Items.SetupCoin.Name"))
+                .addLoreLine(INSTANCE.getConfigFile().getValue("Items.SetupCoin.Lore")).toItemStack();
+
+        // Setzt dem Spieler das Item in die Hand
+        player.getInventory().setItem(0, setupItem);
+        player.getInventory().setItem(1, autoCoinSetup);
 
         return false;
     }

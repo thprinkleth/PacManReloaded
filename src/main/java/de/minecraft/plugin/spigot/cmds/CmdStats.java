@@ -9,35 +9,36 @@ import org.bukkit.entity.Player;
 
 public class CmdStats implements CommandExecutor {
 
-    private PacMan instance = PacMan.getInstance();
+    private final PacMan INSTANCE = PacMan.getInstance();
 
+    // Wird ausgeführt, wenn eine Person eine Nachricht schickt, welche mit "/" beginnt
     @Override
     public boolean onCommand(CommandSender cs, Command cmd, String label, String[] args) {
 
-        // Looks if the command executor writes "/stats"
+        // Überprüft, ob der Sender der Nachricht "/stats ..." geschrieben hat
         if (!cmd.getName().equalsIgnoreCase("stats")) {
             return true;
         }
 
-        // Looks if the command executor is a Player
-        if (cs instanceof Player) {
-            // Sends the console a message that the command executor has to be a player
-            Bukkit.getConsoleSender().sendMessage(instance.getMessageFile().getValue("Commands.NoPlayer").toString());
+        // Überprüft, ob der Sender ein Player ist (die Konsole kann auch Kommandos schicken)
+        if (!(cs instanceof Player)) {
+
+            // Sendet der Konsole eine Nachricht, dass nur ein Spieler das Kommando ausführen kann
+            Bukkit.getConsoleSender().sendMessage(INSTANCE.getMessageFile().getValue("Commands.NoPlayer"));
             return true;
         }
 
-        // Defines a new object of the Player as the command executor (tested it before so it won't throw a exception)
         Player player = (Player) cs;
 
-        // Looks if the syntax of the command is really "/setup" and not "/setup <arguments>"
+        // Überprüft, ob die Syntax des Commands mehr als ein Argument hat (z.B. /stats xyz 123)
         if (args.length > 1) {
-            // Sends the player a message if he wrote the wrong syntax
-            player.sendMessage(instance.getMessageFile().getValue("Commands.Stats.Syntax", player).toString());
+
+            // Sendet dem Spieler eine Nachricht, dass er die falsche Syntax benutzt hat
+            player.sendMessage(INSTANCE.getMessageFile().getValue("Commands.Stats.Syntax", player));
             return true;
         }
 
         switch (args.length) {
-
             case 0:
                 /**
                  * TODO:

@@ -3,39 +3,43 @@ package de.minecraft.plugin.spigot.gamestate;
 import de.minecraft.plugin.spigot.PacMan;
 
 public class GameStateManager {
-    private GameState[] gameStates;
+
+    private final GameState[] GAME_STATES;
+    private final PacMan INSTANCE = PacMan.getInstance();
     private GameState current;
-    private PacMan instance = PacMan.getInstance();
 
-    public GameStateManager(){
-        gameStates = new GameState[3];
-        gameStates[GameState.LOBBY_STATE] = new LobbyState();
-        gameStates[GameState.INGAME_STATE] = new IngameState();
-        gameStates[GameState.END_STATE] = new EndState();
+    public GameStateManager() {
+        GAME_STATES = new GameState[3];
+        GAME_STATES[GameState.PREGAME_STATE] = new PreGameState();
+        GAME_STATES[GameState.INGAME_STATE] = new IngameState();
+        GAME_STATES[GameState.POSTGAME_STATE] = new PostGameState();
     }
 
-    public void setCurrent(int id){
-        if(current == null){
-            return;
-        }
-        current.stop();
-        current = gameStates[id];
-        current.start();
-    }
-
-    public void stopCurrent(){
-        if (current != null){
+    // Stoppt den derzeitigen Spielstatus
+    public void stopCurrent() {
+        if (current != null) {
             current.stop();
             current = null;
         }
     }
 
+    // Übergibt den derzetigen Spielstatus
     public GameState getCurrent() {
         return current;
     }
 
+    // Setzt den derzeitigen Spielstatus und startet ihn
+    public void setCurrent(int id) {
+        stopCurrent();
+        current = GAME_STATES[id];
+        current.start();
+    }
+
+    // Überprüft, ob alle notwendigen Positionen gesetzt wurden, um das Spiel zu starten
     public boolean canGameStart() {
+
         /**
+         * TODO:
          * Looks if every position needed is there
          * - Lobbyspawn
          * - Pacmanspawn
@@ -43,24 +47,20 @@ public class GameStateManager {
          * - PointSpawns >= 1
          * - PowerUps optional?
          */
-        if (instance.getLocationFile().getLocation("Game.Location.Lobby") == null) {
-            return false;
-        }
-        if (instance.getLocationFile().getLocation("Game.Location.Ghost") == null) {
-            return false;
-        }
-        if (instance.getLocationFile().getLocation("Game.Location.PacMan") == null) {
-            return false;
-        }
-        if ((int) instance.getMessageFile().getValue("Game.Amount.Locations.Points") == 0) {
-            return false;
-        }
-        /*
-        if ((int) instance.getMessageFile().getValue("Game.Amount.Locations.PowerUps") == 0) {
-            return false;
-        }
-         */
 
-        return true;
+        if (INSTANCE.getLocationFile().getLocation("Game.Location.Lobby") == null) {
+            return false;
+        }
+        if (INSTANCE.getLocationFile().getLocation("Game.Location.Ghost") == null) {
+            return false;
+        }
+        if (INSTANCE.getLocationFile().getLocation("Game.Location.PacMan") == null) {
+            return false;
+        }
+        if (INSTANCE.getConfigFile().getIntValue("Game.Amount.Locations.Coins") == 0) {
+            return false;
+        }
+
+        return INSTANCE.getConfigFile().getIntValue("Game.Amount.Locations.PowerUps") != 0;
     }
 }

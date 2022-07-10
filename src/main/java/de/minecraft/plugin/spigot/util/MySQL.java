@@ -7,7 +7,7 @@ import java.sql.*;
 
 public class MySQL {
 
-    private PacMan instance = PacMan.getInstance();
+    private final PacMan INSTANCE = PacMan.getInstance();
 
     private Connection connection;
     private final String USERNAME;
@@ -16,13 +16,13 @@ public class MySQL {
     private final String HOST;
     private final String PASSWORD;
 
-    public MySQL(String username, int port, String database, String host, String password) {
+    public MySQL() {
 
-        this.USERNAME = username;
-        this.PORT = port;
-        this.DATABASE = database;
-        this.HOST = host;
-        this.PASSWORD = password;;
+        this.USERNAME = INSTANCE.getMySqlFile().getValue("Login.Username");
+        this.PORT = INSTANCE.getMySqlFile().getIntValue("Login.Port");
+        this.DATABASE = INSTANCE.getMySqlFile().getValue("Login.Database");
+        this.HOST = INSTANCE.getMySqlFile().getValue("Login.Host");
+        this.PASSWORD = INSTANCE.getMySqlFile().getValue("Login.Password");
 
         connect();
         createTable();
@@ -32,7 +32,7 @@ public class MySQL {
         return (connection != null);
     }
 
-    // Opens a connection to the MySQL-Server
+    // Erstellt eine Verbindung zu dem MySQL-Server
     public void connect() {
 
         if (isConnected()) {
@@ -40,16 +40,17 @@ public class MySQL {
         }
 
         try {
-            Bukkit.getConsoleSender().sendMessage((String) instance.getMessageFile().getValue("Console.MySQL.Connect.Wait"));
+
+            Bukkit.getConsoleSender().sendMessage(INSTANCE.getMessageFile().getValue("MySQL.Connect.Wait"));
             connection = DriverManager.getConnection("jdbc:mysql://" + HOST + ":" + PORT + "/" + DATABASE + "?autoReconnect=true", USERNAME, PASSWORD);
-            Bukkit.getConsoleSender().sendMessage((String) instance.getMessageFile().getValue("Console.MySQL.Connect.Success"));
+            Bukkit.getConsoleSender().sendMessage(INSTANCE.getMessageFile().getValue("MySQL.Connect.Success"));
         } catch (SQLException ex) {
             ex.printStackTrace();
         }
 
     }
 
-    // Disconnects from the MySQL-Server
+    // Schließt die Verbindung zu dem Server
     public void disconnect() {
 
         if (!isConnected()) {
@@ -58,14 +59,14 @@ public class MySQL {
 
         try {
             connection.close();
-            Bukkit.getConsoleSender().sendMessage((String) instance.getMessageFile().getValue("MySQL.Disconnect.Success"));
+            Bukkit.getConsoleSender().sendMessage(INSTANCE.getMessageFile().getValue("MySQL.Disconnect.Success"));
         } catch (SQLException ex) {
             ex.printStackTrace();
         }
 
     }
 
-    // Updates the database
+    // Aktualisiert die Datenbank
     public void update(String query) {
 
         try {
@@ -77,19 +78,21 @@ public class MySQL {
         }
     }
 
-    // Create new table in the MySQL-Database
+    // Erzeugt ein neuen Table in der Datenbank
     public void createTable() {
         update("CREATE TABLE IF NOT EXISTS `PacMan` (`uid` VARCHAR(64), `uuid` VARCHAR(64) `playedGames` INT(100), `winsPacMan` INT(100), `losesPacMan` INT(100), `winsGhost` INT(100), `losesGhost` INT(100), `pacManEaten` INT(100)");
     }
 
-    // Executed an query on the database
+    // Führt eine Datenabfrage an der Datenbank aus
     public ResultSet query(String query) {
 
         ResultSet resultSet = null;
 
         try {
+
             Statement statement = connection.createStatement();
             resultSet = statement.executeQuery(query);
+
         } catch (SQLException ex) {
             ex.printStackTrace();
         }
@@ -97,7 +100,7 @@ public class MySQL {
         return resultSet;
     }
 
-    // Checks if the player has already an entry in the database
+    // Überprüft, ob ein Spieler bereits in der Datenbank vorhanden ist
     public boolean exists(String uuid) {
 
         ResultSet resultSet = query("SELECT * FROM `PacMan` WHERE `uuid` = '" + uuid + "';");
@@ -114,7 +117,7 @@ public class MySQL {
     }
 
 
-    // Adds one game to the players entry in the database
+    // Fügt einem Spieler ein Spiel hinzu
     public void addGame(String uuid) {
 
         if (exists(uuid)) {
@@ -124,7 +127,7 @@ public class MySQL {
         }
     }
 
-    // Gets the played games of a player
+    // Gibt die Menge an gespielter Spiele eines Spielers zurück
     public int getGames(String uuid) {
 
         try {
@@ -139,12 +142,12 @@ public class MySQL {
         return 0;
     }
 
-    // Adds one add as pacman to the players entry in the database
+    // Fügt einem Spieler ein Sieg als PacMan hinzu
     public void addWinsPacMan(String uuid) {
         update("UPDATE `PacMan` SET `winsPacMan` = '" + (getWinsPacMan(uuid) + 1) + "' WHERE `uuid` = '" + uuid + "';");
     }
 
-    // Gets the wins as pacman of a player
+    // Gibt die Menge an gewonnener Spiele als PacMan eines Spielers zurück
     public int getWinsPacMan(String uuid) {
 
         try {
@@ -157,12 +160,12 @@ public class MySQL {
         return 0;
     }
 
-    // Adds one lose as pacman to the players entry in the database
+    // Fügt einem Spieler eine Niederlage als PacMan hinzu
     public void addLosesPacMan(String uuid) {
         update("UPDATE `PacMan` SET `losesPacMan` = '" + (getLosesPacMan(uuid) + 1) + "' WHERE `uuid` = '" + uuid + "';");
     }
 
-    // Gets the loses as pacman of a player
+    // Gibt die Menge an verlorener Spiele als PacMan eines Spielers zurück
     public int getLosesPacMan(String uuid) {
 
         try {
@@ -175,12 +178,12 @@ public class MySQL {
         return 0;
     }
 
-    // Adds one win as a ghost to the players entry in the database
+    // Fügt einem Spieler einen Sieg als Geist hinzu
     public void addWinsGhost(String uuid) {
         update("UPDATE `PacMan` SET `winsGhost` = '" + (getWinsGhost(uuid) + 1) + "' WHERE `uuid` = '" + uuid + "';");
     }
 
-    // Gets the wins as a ghost of a player
+    // Gibt die Menge an gewonnenen Spiele als Geist eines Spielers zurück
     public int getWinsGhost(String uuid) {
 
         try {
@@ -193,12 +196,12 @@ public class MySQL {
         return 0;
     }
 
-    // Adds one lose as a ghost to the players entry in the database
+    // Fügt einem Spieler eine Niederlage als Geist hinzu
     public void addLosesGhost(String uuid) {
         update("UPDATE `PacMan` SET `losesGhost` = '" + (getLosesPacMan(uuid) + 1) + "' WHERE `uuid` = '" + uuid + "';");
     }
 
-    // Gets the loses as a ghost of a player
+    // Gibt die Menge an verlorener Spiele als Geist eines Spielers zurück
     public int getLosesGhost(String uuid) {
 
         try {
@@ -211,12 +214,12 @@ public class MySQL {
         return 0;
     }
 
-    // Adds one point to the score of PacMans eaten by a ghost to the players entry in the database
+    // Fügt einem Spieler einen gegessenen PacMan
     public void addPacmanEaten(String uuid) {
         update("UPDATE `PacMan` SET `pacManEaten` = '" + (getPacmanEaten(uuid) + 1) + "' WHERE `uuid` = '" + uuid + "';");
     }
 
-    // Gets the score of PacMans eaten by a ghost of a player
+    // Gibt die Menge an gegessenen PacMans eines Spielers zurück
     public int getPacmanEaten(String uuid) {
 
         try {

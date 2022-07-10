@@ -9,94 +9,141 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 
 public class InventoryClickListener implements Listener {
 
-    PacMan instance = PacMan.getInstance();
+    private final PacMan INSTANCE = PacMan.getInstance();
 
+    // Wird ausgeführt, wenn der Spieler eine Maustaste klickt, während ein Inventar offen ist
     @EventHandler
     public void onClick(InventoryClickEvent event) {
 
+        // Speichert den Spieler, welcher, während ein Inventar offen ist, klickt
         Player player = ((Player) event.getWhoClicked());
 
-        // Cancels the event so the player can't drag items in the inventory
+        // Bricht das Event ab, sodass der Spieler keine Items verschieben kann
         event.setCancelled(true);
 
-        // Try-catch-block because there will be NullPointerExceptions thrown when the player has an inventory opened but doesn't click in it
+        // Try-catch-Block, da eine NullPointerException geworfen wird, wenn der Spieler auf eine leere Fläche drückt, solange er ein Inventar offen hat
         try {
-            // Checks if the inventory, which was clicked by the player, is the setup inventory
-            if (event.getClickedInventory() == instance.getSetupInventory()) {
 
-                // Saves the clicked slot
-                int slot = event.getSlot();
+            // Überprüft, ob das geöffnete Inventar das Setup-Inventar ist
+            if (event.getClickedInventory().getName().equalsIgnoreCase(INSTANCE.getSetupInventory().getName())) {
 
-                int amountPointLocations = (int) instance.getMessageFile().getValue("Game.Amount.Locations.Points");
-                int amountPowerupLocations = (int) instance.getMessageFile().getValue("Game.Amount.Locations.PowerUps");
+                // Speichert ab, welche Position im Inventar angeklickt wurde
+                int slot = event.getRawSlot();
 
+                // Speichert die Menge an Coin-Positionen ab
+                int amountCoinLocations = INSTANCE.getConfigFile().getIntValue("Game.Amount.Locations.Coins");
+                // Speichert die Menge an PowerUp-Positionen ab
+                int amountPowerupLocations = INSTANCE.getConfigFile().getIntValue("Game.Amount.Locations.PowerUps");
+
+                // Speichert die Position zwischen, bei welcher die jeweiligen Items sein würden
                 final int lobbyLocationSlot = 2;
                 final int ghostLocationSlot = 4;
                 final int pacmanLocationSlot = 6;
-                final int pointLocationSlot = 8 + 4;
-                final int powerupLocationSlot = 8 + 6;
+                final int powerupLocationSlot = 8 + 4;
+                final int coinLocationSlot = 8 + 6;
 
-                Location location;
+                // Speichert die Position des angeklickten Blocks
+                Location location = InteractListener.getClickedBlockLocation();
 
+                // Überprüft, welche Position angeklickt wurde
                 switch (slot) {
+
                     case lobbyLocationSlot:
-                        // Gets the location of the block the player is looking at
-                        location = player.getTargetBlock(null, 5).getLocation();
-                        // Saves the location as a spawn
-                        instance.getLocationFile().setLocation("Game.Location.Lobby", location);
-                        // Sends the player a message that the spawn has been successfully set
-                        player.sendMessage(instance.getMessageFile().getValue("Setup.Spawn.Set.Lobby.Success", player).toString());
+
+                        // Speichert die Position als PreGame- bzw. PostGame-Position
+                        INSTANCE.getLocationFile().setLocation("Game.Location.Lobby", location);
+
+                        // Schickt dem Spieler eine Nachricht, dass die Position erfolgreich gesetzt wurde
+                        player.sendMessage(INSTANCE.getMessageFile().getValue("Setup.Spawn.Set.Lobby.Success", player));
+
+                        // Schließt das Inventar, welches der Spieler offen hat
+                        player.closeInventory();
+
                         break;
+
                     case ghostLocationSlot:
-                        // Gets the location of the block the player is looking at
-                        location = player.getTargetBlock(null, 5).getLocation();
-                        // Saves the location as a spawn
-                        instance.getLocationFile().setLocation("Game.Location.Ghost", location);
-                        // Sends the player a message that the spawn has been successfully set
-                        player.sendMessage(instance.getMessageFile().getValue("Setup.Spawn.Set.Ghosts.Success", player).toString());
+
+                        // Speichert die Position, an der die Geister erscheinen sollen
+                        INSTANCE.getLocationFile().setLocation("Game.Location.Ghost", location);
+
+                        // Schickt dem Spieler eine Nachricht, dass die Position erfolgreich gesetzt wurde
+                        player.sendMessage(INSTANCE.getMessageFile().getValue("Setup.Spawn.Set.Ghosts.Success", player));
+
+                        // Schließt das Inventar, welches der Spieler offen hat
+                        player.closeInventory();
+
                         break;
+
                     case pacmanLocationSlot:
-                        // Gets the location of the block the player is looking at
-                        location = player.getTargetBlock(null, 5).getLocation();
-                        if (location == instance.getLocationFile().getLocation("Game.Location.PacMan"))
-                        // Saves the location as a spawn
-                        instance.getLocationFile().setLocation("Game.Location.PacMan", location);
-                        // Sends the player a message that the spawn has been successfully set
-                        player.sendMessage(instance.getMessageFile().getValue("Setup.Spawn.Set.PacMan.Success", player).toString());
+
+                        // Speichert die Position, an der PacMan erscheinen sollen
+                        INSTANCE.getLocationFile().setLocation("Game.Location.PacMan", location);
+
+                        // Schickt dem Spieler eine Nachricht, dass die Position erfolgreich gesetzt wurde
+                        player.sendMessage(INSTANCE.getMessageFile().getValue("Setup.Spawn.Set.PacMan.Success", player));
+
+                        // Schließt das Inventar, welches der Spieler offen hat
+                        player.closeInventory();
+
                         break;
-                    case pointLocationSlot:
-                        // Gets the location of the block the player is looking at
-                        location = player.getTargetBlock(null, 5).getLocation();
-                        for (int i = 0; i <= amountPointLocations; i++){
-                            if (location == instance.getLocationFile().getLocation("Game.Location.Point." + i)) {
-                                // Sends the player a message that the spawn has been successfully set
-                                player.sendMessage(instance.getMessageFile().getValue("Setup.Spawn.Set.Point.NotSuccess", player).toString());
+
+                    case coinLocationSlot:
+
+                        for (int i = 0; i < amountCoinLocations; i++) {
+
+                            if (location.getBlockX() == INSTANCE.getLocationFile().getLocation("Game.Location.Coin." + i).getBlockX()
+                                    && location.getBlockY() == INSTANCE.getLocationFile().getLocation("Game.Location.Coin." + i).getBlockY()
+                                    && location.getBlockZ() == INSTANCE.getLocationFile().getLocation("Game.Location.Coin." + i).getBlockZ()) {
+
+                                // Schickt dem Spieler eine Nachricht, dass die Position nicht gesetzt wurde
+                                player.sendMessage(INSTANCE.getMessageFile().getValue("Setup.Spawn.Set.Coin.NotSuccess", player));
+
                                 return;
+
                             }
                         }
-                        // Saves the location as a spawn
-                        instance.getLocationFile().setLocation("Game.Location.Point." + amountPointLocations, location);
-                        // Updates the amount of point-locations so there can exist multiple without overwriting the last location
-                        instance.getMessageFile().setValue("Game.Amount.Locations.Points", amountPointLocations + 1);
-                        // Sends the player a message that the spawn has been successfully set
-                        player.sendMessage(instance.getMessageFile().getValue("Setup.Spawn.Set.Point.Success", player).toString());
+
+                        // Speichert die Position, an der Coin erscheinen sollen
+                        INSTANCE.getLocationFile().setLocation("Game.Location.Coin." + amountCoinLocations, location);
+
+                        // Aktualisiert die Menge aller existierenden Coins in der Config-Datei
+                        INSTANCE.getConfigFile().setValue("Game.Amount.Locations.Coins", amountCoinLocations + 1);
+
+                        // Schickt dem Spieler eine Nachricht, dass die Position erfolgreich gesetzt wurde
+                        player.sendMessage(INSTANCE.getMessageFile().getValue("Setup.Spawn.Set.Coin.Success", player, amountCoinLocations + 1));
+
+                        // Schließt das Inventar, welches der Spieler offen hat
+                        player.closeInventory();
+
                         break;
+
                     case powerupLocationSlot:
-                        // Gets the location of the block the player is looking at
-                        location = player.getTargetBlock(null, 5).getLocation();
-                        for (int i = 0; i <= amountPowerupLocations; i++){
-                            if (location == instance.getLocationFile().getLocation("Game.Location.PowerUp." + i)) {
-                                // Sends the player a message that the spawn has been successfully set
-                                player.sendMessage(instance.getMessageFile().getValue("Setup.Spawn.Set.PowerUp.NotSuccess", player).toString());
+
+                        for (int i = 0; i < amountPowerupLocations; i++) {
+
+                            if (location.getBlockX() == INSTANCE.getLocationFile().getLocation("Game.Location.PowerUp." + i).getBlockX()
+                                    && location.getBlockY() == INSTANCE.getLocationFile().getLocation("Game.Location.PowerUp." + i).getBlockY()
+                                    && location.getBlockZ() == INSTANCE.getLocationFile().getLocation("Game.Location.PowerUp." + i).getBlockZ()) {
+
+                                // Schickt dem Spieler eine Nachricht, dass die Position nicht gesetzt wurde
+                                player.sendMessage(INSTANCE.getMessageFile().getValue("Setup.Spawn.Set.PowerUp.NotSuccess", player));
+
                                 return;
                             }
                         }
-                        // Saves the location as a spawn
-                        instance.getLocationFile().setLocation("Game.Location.PowerUp." + amountPointLocations, location);
-                        // Updates the amount of powerup-locations so there can exist multiple without overwriting the last location
-                        instance.getMessageFile().setValue("Game.Amount.Locations.PowerUps", amountPowerupLocations + 1);
-                        // Sends the player a message that the spawn has been successfully set
-                        player.sendMessage(instance.getMessageFile().getValue("Setup.Spawn.Set.PowerUp.Success", player).toString());
+
+                        // Speichert die Position, an der das PowerUp erscheinen sollen
+                        INSTANCE.getLocationFile().setLocation("Game.Location.PowerUp." + amountPowerupLocations, location);
+
+                        // Aktualisiert die Menge aller existierenden PowerUps in der Config-Datei
+                        INSTANCE.getConfigFile().setValue("Game.Amount.Locations.PowerUps", amountPowerupLocations + 1);
+
+                        // Schickt dem Spieler eine Nachricht, dass die Position erfolgreich gesetzt wurde
+                        player.sendMessage(INSTANCE.getMessageFile().getValue("Setup.Spawn.Set.PowerUp.Success", player, amountPowerupLocations + 1));
+
+                        // Schließt das Inventar, welches der Spieler offen hat
+                        player.closeInventory();
+
                         break;
                 }
             }

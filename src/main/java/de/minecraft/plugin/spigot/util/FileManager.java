@@ -15,7 +15,8 @@ public class FileManager {
     public YamlConfiguration fileConfig;
 
     /**
-     * Setups the initial file
+     * Setzt die initiale Datei auf
+     *
      * @param name
      */
     public FileManager(String name) {
@@ -39,7 +40,8 @@ public class FileManager {
     }
 
     /**
-     * Sets a value in the path in the file
+     * Weist einem Pfad in der Datei ein Wert zu
+     *
      * @param path
      * @param value
      */
@@ -49,27 +51,30 @@ public class FileManager {
     }
 
     /**
-     * Returns the value in the path in the file and replaces color-codes
+     * Weist einem Pfad in der Datei ein Wert zu und ersetzt den Farbcode und den Prefix
+     *
      * @param path
      * @return
      */
-    public Object getValue(String path) {
-        String string = (String) fileConfig.get(path);
+    public String getValue(String path) {
+        String string = fileConfig.get(path).toString();
 
         string = string.replace('&', '§');
+        string = string.replace("{Prefix}", fileConfig.get("Server.Prefix").toString().replace('&', '§'));
 
         return string;
     }
 
     /**
-     * Returns the value in the path in the file, replaces color-codes and Player-specific values
+     * Weist einem Pfad in der Datei ein Wert zu und ersetzt den Farbcode, den Prefix und spielerspezifische Attribute
+     *
      * @param path
      * @param player
      * @return
      */
-    public Object getValue(String path, Player player) {
+    public String getValue(String path, Player player) {
 
-        String string = (String) getValue(path);
+        String string = getValue(path);
 
         string = string.replace("{XValue}", String.valueOf(player.getLocation().getX()));
         string = string.replace("{YValue}", String.valueOf(player.getLocation().getY()));
@@ -86,33 +91,38 @@ public class FileManager {
     }
 
     /**
-     * Returns the value in the path in the file, replaces color-codes, Player-specific values and one specific Integer
+     * Weist einem Pfad in der Datei ein Wert zu und ersetzt den Farbcode, den Prefix, spielerspezifische Attribute und eine Zahl
+     *
      * @param path
      * @param player
      * @return
      */
-    public Object getValue(String path, Player player, int numberToReplace) {
+    public String getValue(String path, Player player, int numberToReplace) {
 
-        String string = (String) getValue(path, player);
+        String string = getValue(path, player);
 
         string = string.replace("{Number}", String.valueOf(numberToReplace));
 
         return string;
     }
 
+    public int getIntValue(String path) {
+        return fileConfig.getInt(path);
+    }
+
     /**
-     * Saves the location in the path in the file
+     * Speichert eine Position in einem Pfad in der Datei
+     *
      * @param path
      * @param location
      */
-
     public void setLocation(String path, Location location) {
 
         fileConfig.set(path + ".x", location.getX());
         fileConfig.set(path + ".y", location.getY());
         fileConfig.set(path + ".z", location.getZ());
-        fileConfig.set(path + ".yaw", location.getYaw());
-        fileConfig.set(path + ".pitch", location.getPitch());
+        fileConfig.set(path + ".yaw", Double.valueOf(location.getYaw()));
+        fileConfig.set(path + ".pitch", Double.valueOf(location.getPitch()));
         fileConfig.set(path + ".world", location.getWorld().getName());
 
         saveFile();
@@ -120,23 +130,26 @@ public class FileManager {
 
     /**
      * Returns the location in the path in the file with y += 1
+     * Gibt die Position von einem Pfad in der Datei zurück mit Verschiebung in x- und z-Richtung in 0.5 und 1 in y-Richtung
+     *
      * @param path
      * @return
      */
     public Location getSpawn(String path) {
 
-        double x = (double) fileConfig.get(path + ".x");
+        double x = (double) fileConfig.get(path + ".x") + 0.5;
         double y = (double) fileConfig.get(path + ".y") + 1;
-        double z = (double) fileConfig.get(path + ".z");
-        float yaw = (float) fileConfig.get(path + ".yaw");
-        float pitch = (float) fileConfig.get(path + ".pitch");
+        double z = (double) fileConfig.get(path + ".z") + 0.5;
+        double yaw = (double) fileConfig.get(path + ".yaw");
+        double pitch = (double) fileConfig.get(path + ".pitch");
         String world = (String) fileConfig.get(path + ".world");
 
-        return new Location(Bukkit.getWorld(world), x, y, z, yaw, pitch);
+        return new Location(Bukkit.getWorld(world), x, y, z, Float.valueOf(String.valueOf(yaw)), Float.valueOf(String.valueOf(pitch)));
     }
 
     /**
-     * Returns the location in the path in the file
+     * Gibt die POsition von einem Pfad in der Datei zurück
+     *
      * @param path
      * @return
      */
@@ -145,15 +158,15 @@ public class FileManager {
         double x = (double) fileConfig.get(path + ".x");
         double y = (double) fileConfig.get(path + ".y");
         double z = (double) fileConfig.get(path + ".z");
-        float yaw = (float) fileConfig.get(path + ".yaw");
-        float pitch = (float) fileConfig.get(path + ".pitch");
+        double yaw = (double) fileConfig.get(path + ".yaw");
+        double pitch = (double) fileConfig.get(path + ".pitch");
         String world = (String) fileConfig.get(path + ".world");
 
-        return new Location(Bukkit.getWorld(world), x, y, z, yaw, pitch);
+        return new Location(Bukkit.getWorld(world), x, y, z, Float.valueOf(String.valueOf(yaw)), Float.valueOf(String.valueOf(pitch)));
     }
 
     /**
-     * Saves the file
+     * Speichert die Datei
      */
     public void saveFile() {
         try {
@@ -169,9 +182,5 @@ public class FileManager {
 
     public YamlConfiguration getFileConfig() {
         return fileConfig;
-    }
-
-    public File getFolder() {
-        return folder;
     }
 }

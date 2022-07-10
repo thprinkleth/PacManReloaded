@@ -2,42 +2,63 @@ package de.minecraft.plugin.spigot.listeners;
 
 import de.minecraft.plugin.spigot.PacMan;
 import de.minecraft.plugin.spigot.gamestate.IngameState;
+import de.minecraft.plugin.spigot.util.BlockSetter;
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerMoveEvent;
 
-public class PlayerMoveListener {
+public class PlayerMoveListener implements Listener {
 
-    private PacMan instance = PacMan.getInstance();
+    private final PacMan INSTANCE = PacMan.getInstance();
 
+    // Wird ausgeführt, sobald ein Spieler sich bewegt
     @EventHandler
     public void onMovement(PlayerMoveEvent event){
 
+        // Speichert den Spieler, welcher sich bewegt
         Player player = event.getPlayer();
-        String rolePlayer = instance.getRoleHandler().getPlayerRoles().get(player);
 
-        if(!(instance.getGameStateManager().getCurrent() instanceof IngameState)){
+        // Überprüft, ob der derzeitige Spielstatus nicht Ingame ist
+        if(!(INSTANCE.getGameStateManager().getCurrent() instanceof IngameState)){
             return;
         }
 
-        if(!rolePlayer.equalsIgnoreCase("Ghost")){
+        // Speichert die Rolle des Spielers
+        String rolePlayer = INSTANCE.getRoleHandler().getPlayerRoles().get(player);
+
+        // Überprüft, ob der Spieler kein Geist ist
+        if(!rolePlayer.equalsIgnoreCase("Ghost")) {
             return;
         }
 
-        double xFrom = event.getFrom().getBlockX();
-        double yFrom = event.getFrom().getBlockY() + 10;
-        double zFrom = event.getFrom().getBlockZ();
+        // Speichert die Position, an der der Spieler vor der Bewegung war
+        Location locFrom = event.getFrom();
+        // Speichert die Position, an der der Spieler jetzt ist
+        Location locTo = event.getTo();
 
-        Location locationFromBlock = new Location(player.getLocation().getWorld(), xFrom, yFrom, zFrom);
-        player.getLocation().getWorld().getBlockAt(locationFromBlock).setType(Material.AIR);
+        // Überprüft, ob es keine Differenz der Position auf horizontaler Ebene gibt
+        if (locFrom.getBlockX() == locTo.getBlockX() && locFrom.getBlockZ() == locTo.getBlockZ()) {
+            return;
+        }
 
-        double xTo = event.getTo().getBlockX();
-        double zTo = event.getTo().getBlockZ();
+        // Speichert die Position des Blockes ab, von der bewegt hat, nur um 10 Blöcke nach oben verschoben
+        Location fromBlockLoc = locFrom;
+        fromBlockLoc.setY(fromBlockLoc.getBlockY() + 10);
 
-        Location locationToBlock = new Location(player.getLocation().getWorld(), xTo, yFrom, zTo);
-        player.getLocation().getWorld().getBlockAt(locationToBlock).setType(Material.CONCRETE);
-        player.getLocation().getWorld().getBlockAt(locationToBlock).setData((byte) 14);
+        // Setzt den Block auf Luft (Entfernt den alten Block, welcher da war
+        Bukkit.getScheduler().runTaskLater(INSTANCE, new BlockSetter(fromBlockLoc, Material.AIR), 3);
+
+        // Speichert die Position des neuen Blockes, an der der Spieler jetzt steht, nur um 10 Blöcke nach oben verschoben
+        int x = locTo.getBlockX();
+        int y = locTo.getBlockY() + 10;
+        int z = locTo.getBlockZ();
+        Location toBlockLoc = new Location(locFrom.getWorld(), x, y, z);
+
+        // Setzt den Block auf roten Beton
+        Bukkit.getScheduler().runTask(INSTANCE, new BlockSetter(toBlockLoc, 251, (byte) 14));
     }
 }
