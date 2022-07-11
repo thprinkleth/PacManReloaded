@@ -38,29 +38,24 @@ public class GameStateManager {
     // Überprüft, ob alle notwendigen Positionen gesetzt wurden, um das Spiel zu starten
     public boolean canGameStart() {
 
-        /**
-         * TODO:
-         * Looks if every position needed is there
-         * - Lobbyspawn
-         * - Pacmanspawn
-         * - Ghostspawn
-         * - PointSpawns >= 1
-         * - PowerUps optional?
-         */
+        try {
+            if (INSTANCE.getLocationFile().getLocation("Game.Location.Lobby") == null) {
+                return false;
+            }
+            if (INSTANCE.getLocationFile().getLocation("Game.Location.Ghost") == null) {
+                return false;
+            }
+            if (INSTANCE.getLocationFile().getLocation("Game.Location.PacMan") == null) {
+                return false;
+            }
+            if (INSTANCE.getConfigFile().getIntValue("Game.Amount.Locations.Coins") == 0) {
+                return false;
+            }
 
-        if (INSTANCE.getLocationFile().getLocation("Game.Location.Lobby") == null) {
-            return false;
-        }
-        if (INSTANCE.getLocationFile().getLocation("Game.Location.Ghost") == null) {
-            return false;
-        }
-        if (INSTANCE.getLocationFile().getLocation("Game.Location.PacMan") == null) {
-            return false;
-        }
-        if (INSTANCE.getConfigFile().getIntValue("Game.Amount.Locations.Coins") == 0) {
-            return false;
-        }
+            return INSTANCE.getConfigFile().getIntValue("Game.Amount.Locations.PowerUps") != 0;
 
-        return INSTANCE.getConfigFile().getIntValue("Game.Amount.Locations.PowerUps") != 0;
+        } catch (NullPointerException ex) {
+            return false;
+        }
     }
 }

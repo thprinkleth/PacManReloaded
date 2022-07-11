@@ -1,5 +1,6 @@
 package de.minecraft.plugin.spigot.util;
 
+import de.minecraft.plugin.spigot.PacMan;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -9,6 +10,8 @@ import java.io.File;
 import java.io.IOException;
 
 public class FileManager {
+
+    private final PacMan INSTANCE = PacMan.getInstance();
 
     public File folder;
     public File file;
@@ -57,10 +60,11 @@ public class FileManager {
      * @return
      */
     public String getValue(String path) {
+
         String string = fileConfig.get(path).toString();
 
         string = string.replace('&', '§');
-        string = string.replace("{Prefix}", fileConfig.get("Server.Prefix").toString().replace('&', '§'));
+        string = string.replace("{Prefix}", INSTANCE.getMessageFile().getFileConfig().get("Server.Prefix").toString().replace('&', '§'));
 
         return string;
     }
@@ -84,7 +88,7 @@ public class FileManager {
         string = string.replace("{PitchValue}", String.valueOf(player.getLocation().getPitch()));
         string = string.replace("{WorldValue}", String.valueOf(player.getLocation().getWorld().getName()));
         string = string.replace("{ServerPlayers}", String.valueOf(Bukkit.getServer().getOnlinePlayers().size()));
-        string = string.replace("{PlayersNeededToStart}", String.valueOf(getValue("Game.PlayersNeededToStart")));
+        string = string.replace("{PlayersNeededToStart}", String.valueOf(INSTANCE.getConfigFile().getValue("Game.PlayersNeededToStart")));
         string = string.replace("{PlayerName}", String.valueOf(player.getDisplayName()));
 
         return string;
@@ -102,6 +106,22 @@ public class FileManager {
         String string = getValue(path, player);
 
         string = string.replace("{Number}", String.valueOf(numberToReplace));
+
+        return string;
+    }
+
+    /**
+     * Weist einem Pfad in der Datei ein Wert zu und ersetzt den Farbcode, den Prefix, spielerspezifische Attribute und einen String
+     *
+     * @param path
+     * @param player
+     * @return
+     */
+    public String getValue(String path, Player player, String stringToReplace) {
+
+        String string = getValue(path, player);
+
+        string = string.replace("{String}", stringToReplace);
 
         return string;
     }

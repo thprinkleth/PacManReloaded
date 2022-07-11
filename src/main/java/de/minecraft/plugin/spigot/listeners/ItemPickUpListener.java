@@ -5,6 +5,9 @@ import de.minecraft.plugin.spigot.gamestate.GameState;
 import de.minecraft.plugin.spigot.gamestate.IngameState;
 import org.bukkit.Bukkit;
 import org.bukkit.Sound;
+import org.bukkit.boss.BarColor;
+import org.bukkit.boss.BarStyle;
+import org.bukkit.boss.BossBar;
 import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -16,6 +19,8 @@ import org.bukkit.potion.PotionEffectType;
 public class ItemPickUpListener implements Listener {
 
     private final PacMan INSTANCE = PacMan.getInstance();
+
+    private int repeatingTask;
 
     // Wird ausgeführt, wenn ein Spieler ein Item aufhebt
     @EventHandler
@@ -65,13 +70,25 @@ public class ItemPickUpListener implements Listener {
                         // Überprüft, ob der Spieler PacMan ist
                         if (INSTANCE.getRoleHandler().getPlayerRoles().get(current).equalsIgnoreCase("PacMan")) {
 
-                            // Rechnet ihm ein verlorenes Spiel an
-                            INSTANCE.getMySQL().addWinsPacMan(current.getUniqueId().toString());
+                            // Rechnet ihm ein gewonnenes Spiel als PacMan an
+                            INSTANCE.getMySQL().addWinsPacMan(current);
+
+                            // Setzt den Spieler den Titel, dass er als PacMan gewonnen hat
+                            current.sendTitle(INSTANCE.getMessageFile().getValue("Game.Finish.Win.PacMan.Title", current), INSTANCE.getMessageFile().getValue("Game.Finish.Win.PacMan.SubTitle", current));
+
+                            // Spielt dem Spieler einen Ton ab
+                            current.playSound(current.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 1, 1);
 
                         } else {
 
-                            // Rechnet den Geistern ein gewonnenes Spiel an
-                            INSTANCE.getMySQL().addLosesGhost(current.getUniqueId().toString());
+                            // Rechnet ihm ein verlorenes Spiel als Geist an
+                            INSTANCE.getMySQL().addLosesGhost(current);
+
+                            // Setzt den Spieler den Titel, dass er als Geist verloren hat
+                            current.sendTitle(INSTANCE.getMessageFile().getValue("Game.Finish.Lose.Ghost.Title", current), INSTANCE.getMessageFile().getValue("Game.Finish.Lose.Ghost.SubTitle", current));
+
+                            // Spielt dem Spieler einen Ton ab
+                            current.playSound(current.getLocation(), Sound.ENTITY_ENDERDRAGON_DEATH, 1, 1);
                         }
                     }
 
@@ -87,10 +104,10 @@ public class ItemPickUpListener implements Listener {
             for (Player current : INSTANCE.getPlayerList()) {
 
                 // Setzt das Level von dem Spieler gleich mit dem Level des Spieles
-                current.setLevel(INSTANCE.getPowerUpHandler().getLevel());
+                player.setLevel(INSTANCE.getPowerUpHandler().getLevel());
 
                 // Speichert den Fortschritt in Prozent in einer Variable
-                float progress = ((float) INSTANCE.getScoreHandler().getScore() / (float) INSTANCE.getConfigFile().getIntValue("Game.Amount.Locations.Coins"));
+                float progress = ((float) INSTANCE.getScoreHandler().getScore() % (float) INSTANCE.getConfigFile().getIntValue("Game.Amount.Locations.Coins")) / (float) INSTANCE.getConfigFile().getIntValue("Game.Amount.Locations.Coins");
 
                 // Setzt die XP-Leiste des Spielers entsprechend dem Fortschritt in dem jeweiligen Level
                 current.setExp(progress);

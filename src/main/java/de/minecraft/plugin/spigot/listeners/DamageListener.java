@@ -3,6 +3,7 @@ package de.minecraft.plugin.spigot.listeners;
 import de.minecraft.plugin.spigot.PacMan;
 import de.minecraft.plugin.spigot.gamestate.GameState;
 import de.minecraft.plugin.spigot.gamestate.IngameState;
+import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -54,7 +55,7 @@ public class DamageListener implements Listener {
                 return;
             }
 
-            INSTANCE.getMySQL().addPacmanEaten(damager.getUniqueId().toString());
+            INSTANCE.getMySQL().addPacmanEaten(damager);
 
             // Überprüft, ob der Spieler (PacMan) nur noch ein Leben hat
             if (player.getHealth() <= 2) {
@@ -68,13 +69,25 @@ public class DamageListener implements Listener {
                     // Überprüft, ob der Spieler PacMan ist
                     if (INSTANCE.getRoleHandler().getPlayerRoles().get(current).equalsIgnoreCase("PacMan")) {
 
-                        // Rechnet ihm ein verlorenes Spiel an
-                        INSTANCE.getMySQL().addLosesPacMan(current.getUniqueId().toString());
+                        // Rechnet ihm ein verlorenes Spiel als PacMan an
+                        INSTANCE.getMySQL().addLosesPacMan(current);
+
+                        // Setzt dem Spieler den Titel, dass er als PacMan verloren hat
+                        current.sendTitle(INSTANCE.getMessageFile().getValue("Game.Finish.Lose.PacMan.Title", current), INSTANCE.getMessageFile().getValue("Game.Finish.Lose.PacMan.SubTitle", current));
+
+                        // Spielt einen Ton für den Spieler ab
+                        current.playSound(current.getLocation(), Sound.ENTITY_ENDERDRAGON_DEATH, 1, 1);
 
                     } else {
 
-                        // Rechnet den Geistern ein gewonnenes Spiel an
-                        INSTANCE.getMySQL().addWinsGhost(current.getUniqueId().toString());
+                        // Rechnet ihm ein gewonnenes Spiel als Geist an
+                        INSTANCE.getMySQL().addWinsGhost(current);
+
+                        // Setzt dem Spieler den Titel, dass er als Geist gewonnen hat
+                        current.sendTitle(INSTANCE.getMessageFile().getValue("Game.Finish.Win.Ghost.Title", current), INSTANCE.getMessageFile().getValue("Game.Finish.Win.Ghost.SubTitle", current));
+
+                        // Spielt einen Ton für den Spieler ab
+                        current.playSound(current.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 1, 1);
                     }
                 }
 

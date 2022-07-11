@@ -7,6 +7,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
 
 public class JoinListener implements Listener {
 
@@ -29,8 +30,10 @@ public class JoinListener implements Listener {
         // Setzt das Essenslevel auf 10 (kein Hunger)
         player.setFoodLevel(20);
 
+        // Setzt das Inventar von dem Spieler zurück
         player.getInventory().clear();
 
+        // Setzt das Level und die XP-Leiste auf 0
         player.setLevel(0);
         player.setExp(0);
 
@@ -42,13 +45,15 @@ public class JoinListener implements Listener {
         }
 
         // Fügt den Spieler zu der Spielerliste hinzu
-        INSTANCE.addToPlayerList(player);
+        INSTANCE.getPlayerList().add(player);
 
         // Setzt den Spielmodus des Spielers auf Abenteuer (kann nicht mit Blöcken interagieren)
         player.setGameMode(GameMode.ADVENTURE);
 
         // Sendet jedem Spieler auf dem Server eine spezielle Nachricht
         event.setJoinMessage(INSTANCE.getMessageFile().getValue("World.Join", player));
+
+        player.addPotionEffect(new PotionEffect(PotionEffectType.NIGHT_VISION, Integer.MAX_VALUE, 1));
 
         // Try-catch-Block, da eine NullPointerException geworfen wird, wenn der Spieler das erste Mal den Server betritt, nachdem das Plugin aktiviert wurde
         try {

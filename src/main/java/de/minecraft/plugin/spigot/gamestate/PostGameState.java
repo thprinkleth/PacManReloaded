@@ -7,6 +7,8 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
+import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
 
 public class PostGameState extends GameState {
 
@@ -21,17 +23,38 @@ public class PostGameState extends GameState {
          * - Send Title/Message/Hotbarmessage to every Player (Won, Loss, Score, ?Overall rank?)
          */
 
-        INSTANCE.updateRankingInventory();
-
         // Geht jeden Spieler durch, der sich gerade auf dem Server befindet
         for (Player player : Bukkit.getOnlinePlayers()) {
 
-            // Teleportiert den Spieler an die Position, an der sie bei Betreten des Servers erschienen sind.
+            // Setzt das Inventar von dem Spieler zurück
             player.getInventory().clear();
+
+            // Setzt die Leben des Spielers zurück
             player.setMaxHealth(20);
             player.setHealthScale(20);
             player.setHealth(20);
+
+            // Teleportiert den Spieler an die Position, an der sie bei Betreten des Servers erschienen sind.
             player.teleport(INSTANCE.getLocationFile().getSpawn("Game.Location.Lobby"));
+
+            // Geht jeden Effekt durch, den der Spieler hat
+            for (PotionEffect potion : player.getActivePotionEffects()) {
+
+                // Entfernt den Effekt von dem Spieler
+                player.removePotionEffect(potion.getType());
+            }
+
+            // Gibt dem Spieler Effekte, dass er nicht springen kann, dass er für drei Sekunden nicht bewegen kann und nichts sieht
+            player.addPotionEffect(new PotionEffect(PotionEffectType.SLOW, 3 * 20, 200));
+            player.addPotionEffect(new PotionEffect(PotionEffectType.BLINDNESS, 3 * 20, 200));
+
+            // Führt "stop()" nach 120 Sekunden aus
+            Bukkit.getScheduler().runTaskLater(INSTANCE, new Runnable() {
+                @Override
+                public void run() {
+                    stop();
+                }
+            }, 120 * 20);
         }
     }
 
@@ -39,10 +62,7 @@ public class PostGameState extends GameState {
     @Override
     public void stop() {
 
-        // Setzt die Rollenverteilung der Spieler zurück
-        INSTANCE.getRoleHandler().getPlayerRoles().clear();
-
-        // TODO: only if necessary
+        // Schließt den Server
         Bukkit.getServer().shutdown();
     }
 }

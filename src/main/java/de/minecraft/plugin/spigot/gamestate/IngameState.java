@@ -8,8 +8,6 @@ import org.bukkit.*;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.map.MapCanvas;
-import org.bukkit.map.MapRenderer;
 import org.bukkit.map.MapView;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
@@ -20,6 +18,8 @@ import java.util.Random;
 public class IngameState extends GameState {
 
     private final PacMan INSTANCE = PacMan.getInstance();
+
+    private int scheduler;
 
     // Wird bei Wechsel des Gamestatuses auf Ingame ausgeführt
     @Override
@@ -33,11 +33,6 @@ public class IngameState extends GameState {
 
                 // Löscht das Objekt
                 entity.remove();
-            } else {
-                ((Player) entity).setGameMode(GameMode.ADVENTURE);
-                if (!INSTANCE.getPlayerList().contains(((Player) entity))) {
-                    INSTANCE.getPlayerList().add((Player) entity);
-                }
             }
         }
 
@@ -67,18 +62,25 @@ public class IngameState extends GameState {
             // Setzt die anfängliche Anzahl an Leben, die PacMan hat
             pacMan.setHealth(2);
 
+            // Erzeugt die Karte und setzt sie PacMan in die linke Hand
             MapView map = INSTANCE.getServer().createMap(pacMan.getWorld());
             map.setCenterX(INSTANCE.getLocationFile().getLocation("Game.Location.Ghost").getBlockX());
             map.setCenterZ(INSTANCE.getLocationFile().getLocation("Game.Location.Ghost").getBlockZ());
-            map.setScale(MapView.Scale.CLOSE);
-            // Erzeugt die Karte und setzt sie PacMan in die linke Hand
-            pacMan.getInventory().setItemInOffHand(new ItemStack(Material.MAP));
-            pacMan.sendMap(map);
+            // map.setScale(MapView.Scale.CLOSE);
+
+            pacMan.getInventory().setItemInOffHand(new ItemStack(Material.EMPTY_MAP));
+
+            // Bukkit.getScheduler().runTaskLaterAsynchronously(INSTANCE, () -> pacMan.sendMap(map), 10);
+            System.out.println(map.getId());
 
             // Erzeugt einen sich wiederholenden Auftrag, welcher jede viertel Sekunde aufgerufen wird
-            Bukkit.getScheduler().scheduleAsyncRepeatingTask(INSTANCE, new Runnable() {
+            scheduler = Bukkit.getScheduler().scheduleAsyncRepeatingTask(INSTANCE, new Runnable() {
                 @Override
                 public void run() {
+
+                    if (!(INSTANCE.getGameStateManager().getCurrent() instanceof IngameState)) {
+                        Bukkit.getScheduler().cancelTask(scheduler);
+                    }
 
                     // Geht jeden Spieler, der als Spieler eingetragen ist, durch
                     for (Player player : INSTANCE.getPlayerList()) {
@@ -119,7 +121,7 @@ public class IngameState extends GameState {
                     player.teleport(INSTANCE.getLocationFile().getSpawn("Game.Location." + INSTANCE.getRoleHandler().getPlayerRoles().get(player)));
                 });
 
-                INSTANCE.getMySQL().addGame(player.getUniqueId().toString());
+                INSTANCE.getMySQL().addGame(player);
             }
         } else {
 
@@ -173,15 +175,16 @@ public class IngameState extends GameState {
     @Override
     public void stop() {
 
-        int y = INSTANCE.getLocationFile().getLocation("Game.Location.Ghost").getBlockY() + 11;
+        int oldY = INSTANCE.getLocationFile().getLocation("Game.Location.Ghost").getBlockY() + 11;
 
         for (int x = INSTANCE.getLocationFile().getLocation("Game.Location.Ghost").getBlockX() - 50; x < INSTANCE.getLocationFile().getLocation("Game.Location.Ghost").getBlockX() + 50; x++) {
-            for (int z = INSTANCE.getLocationFile().getLocation("Game.Location.Ghost").getBlockZ() - 50; z < INSTANCE.getLocationFile().getLocation("Game.Location.Ghost").getBlockZ() + 50; z++) {
+            for (int y = oldY; y < oldY + 2; y++) {
+                for (int z = INSTANCE.getLocationFile().getLocation("Game.Location.Ghost").getBlockZ() - 50; z < INSTANCE.getLocationFile().getLocation("Game.Location.Ghost").getBlockZ() + 50; z++) {
 
-                Location loc = new Location(INSTANCE.getLocationFile().getLocation("Game.Location.Ghost").getWorld(), x, y, z);
-                Bukkit.getScheduler().runTask(INSTANCE, new BlockSetter(loc, Material.AIR));
+                    Location loc = new Location(INSTANCE.getLocationFile().getLocation("Game.Location.Ghost").getWorld(), x, y, z);
+                    Bukkit.getScheduler().runTask(INSTANCE, new BlockSetter(loc, Material.AIR));
+                }
             }
         }
-
     }
 }

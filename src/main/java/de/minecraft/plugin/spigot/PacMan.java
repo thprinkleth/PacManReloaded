@@ -1,6 +1,5 @@
 package de.minecraft.plugin.spigot;
 
-import de.minecraft.plugin.spigot.cmds.CmdLeaderboard;
 import de.minecraft.plugin.spigot.cmds.CmdSetup;
 import de.minecraft.plugin.spigot.cmds.CmdStart;
 import de.minecraft.plugin.spigot.cmds.CmdStats;
@@ -31,13 +30,7 @@ public class PacMan extends JavaPlugin {
 
     /**
      * TODO:
-     * - GameState start/stop überlegen, wo was reinkommt
-     * - MySQL Unterstützung
-     * - Stats command
      * - Ranking command
-     * - Bossbar (Derzeitiges Powerup + Ablaufzeit des PowerUps)
-     * - Titel/Subtitel bei gewinnen/verlieren
-     * - Effekte bei Spielende
      */
 
     private static PacMan instance;
@@ -59,8 +52,6 @@ public class PacMan extends JavaPlugin {
     private ArrayList <Player> playerList;
 
     private Inventory setupInventory;
-    private Inventory leaderboardInventory;
-    private Inventory statsInventory;
 
     private MySQL mySQL;
 
@@ -85,7 +76,7 @@ public class PacMan extends JavaPlugin {
 
         defaultMessage();
 
-        mySQL = new MySQL();
+
 
 
         roleHandler = new RoleHandler();
@@ -108,6 +99,8 @@ public class PacMan extends JavaPlugin {
 
         gameStateManager.setCurrent(GameState.PREGAME_STATE);
 
+        mySQL = new MySQL();
+
         Bukkit.getConsoleSender().sendMessage(messageFile.getValue("Server.StartUp.Message"));
     }
 
@@ -127,7 +120,6 @@ public class PacMan extends JavaPlugin {
         getCommand("setup").setExecutor(new CmdSetup());
         getCommand("start").setExecutor(new CmdStart());
         getCommand("stats").setExecutor(new CmdStats());
-        getCommand("ranking").setExecutor(new CmdLeaderboard());
     }
 
     /**
@@ -157,11 +149,17 @@ public class PacMan extends JavaPlugin {
 
         if (messageFile.getFileConfig().get("Server.StartUp.Message") == null) {
 
+            mySqlFile.getFileConfig().set("Login.Username", "sql8505251");
+            mySqlFile.getFileConfig().set("Login.Port", 3306);
+            mySqlFile.getFileConfig().set("Login.Database", "sql8505251");
+            mySqlFile.getFileConfig().set("Login.Host", "sql8.freemysqlhosting.net");
+            mySqlFile.getFileConfig().set("Login.Password", "iKETWBjSd6");
+
             messageFile.getFileConfig().set("Server.Prefix", "&bPacMan &7|");
 
             messageFile.getFileConfig().set("MySQL.Connect.Wait", "{Prefix} &6Verbinde mit MySQL-Datenbank...");
             messageFile.getFileConfig().set("MySQL.Connect.Success", "{Prefix} &aVerbindung mit MySQL-Datenbank erfolgreich hergestellt.");
-            messageFile.getFileConfig().set("MySQL.Disconnect.Success", "{Prefix} &aVerbindung mit MySQL-Datenbank erfolgreich abgebrochen.");
+            messageFile.getFileConfig().set("MySQL.Disconnect.Success", "{Prefix} &cVerbindung mit MySQL-Datenbank erfolgreich abgebrochen.");
 
             messageFile.getFileConfig().set("Server.StartUp.Message", "{Prefix} &aDas Plugin wurde gestartet.");
             messageFile.getFileConfig().set("Server.ShutDown.Message", "{Prefix} &cDas Plugin wurde gestoppt.");
@@ -195,6 +193,7 @@ public class PacMan extends JavaPlugin {
 
             messageFile.getFileConfig().set("Lobby.Countdown.Counting", "{Prefix} &aDas Spiel startet in {Number} Sekunde(n).");
             messageFile.getFileConfig().set("Lobby.Countdown.Starting", "{Prefix} &aDas Spiel startet jetzt.");
+            messageFile.getFileConfig().set("Lobby.Countdown.NotEnoughLocations", "{Prefix} &cDu musst alle Positionen setzten bevor das Spiel gestartet werden kann.");
             messageFile.getFileConfig().set("Lobby.Countdown.NotEnoughPlayers", "{Prefix} &cEs müssen &6{PlayersNeededToStart} Spieler &cin der Lobby sein, um das Spiel zu starten.");
 
             messageFile.getFileConfig().set("Game.NextLevel.PacMan.Title", "&aDu hast das nächste Level erreicht.");
@@ -202,15 +201,23 @@ public class PacMan extends JavaPlugin {
             messageFile.getFileConfig().set("Game.NextLevel.Ghost.Title", "&cPacMan hat das nächste Level erreicht.");
             messageFile.getFileConfig().set("Game.NextLevel.Ghost.SubTitle", "&7Neues Level: &6{Number}");
 
+            messageFile.getFileConfig().set("Game.Finish.Win.PacMan.Title", "&aDu hast als &6PacMan &agewonnen!");
+            messageFile.getFileConfig().set("Game.Finish.Win.PacMan.SubTitle", "&7Herzlichen Glückwunsch!!");
+            messageFile.getFileConfig().set("Game.Finish.Lose.PacMan.Title", "&cDu hast als &6PacMan &cverloren!");
+            messageFile.getFileConfig().set("Game.Finish.Lose.PacMan.SubTitle", "&7Viel Glück nächstes Mal.");
+            messageFile.getFileConfig().set("Game.Finish.Win.Ghost.Title", "&aDu hast als &6Geist &agewonnen!");
+            messageFile.getFileConfig().set("Game.Finish.Win.Ghost.SubTitle", "&7Herzlichen Glückwunsch!!");
+            messageFile.getFileConfig().set("Game.Finish.Lose.Ghost.Title", "&cDu hast als &6Geist &cverloren!");
+            messageFile.getFileConfig().set("Game.Finish.Lose.Ghost.SubTitle", "&7Viel Glück nächstes Mal.");
+
             messageFile.getFileConfig().set("Game.Score.PacMan", "&aDein Score: &6{Number}");
             messageFile.getFileConfig().set("Game.Score.Ghost", "&bScore von PacMan: &6{Number}");
 
             configFile.getFileConfig().set("Inventory.SetupInventory.Name", "&aSetup-Inventar");
-            configFile.getFileConfig().set("Inventory.LeaderboardInventory.Name", "&aRanking-Inventar");
 
             configFile.getFileConfig().set("Game.Amount.Locations.Coins", 0);
             configFile.getFileConfig().set("Game.Amount.Locations.PowerUps", 0);
-            configFile.getFileConfig().set("Game.PlayersNeededToStart", 5);
+            configFile.getFileConfig().set("Game.PlayersNeededToStart", 1);
 
             configFile.getFileConfig().set("Inventory.SetupInventory.Items.LobbySpawn.Name", "&bLobby-Spawnpunkt");
             configFile.getFileConfig().set("Inventory.SetupInventory.Items.LobbySpawn.Lore", "&7Setze die Position, wo die Spieler vor und nach dem Spiel erscheinen sollen.");
@@ -224,18 +231,17 @@ public class PacMan extends JavaPlugin {
             configFile.getFileConfig().set("Inventory.SetupInventory.Items.CoinSpawn.Lore", "&7Setze die Position, wo ein Coin liegen soll.");
 
             configFile.getFileConfig().set("Items.Setup.Name", "&bSetupItem");
-            configFile.getFileConfig().set("Items.Setup.Lore", "&7Rechtsklick auf einen Block um das Location-Inventar zu oöffnen.");
+            configFile.getFileConfig().set("Items.Setup.Lore", "&7Rechtsklick auf einen Block um das Location-Inventar zu öffnen.");
             configFile.getFileConfig().set("Items.SetupCoin.Name", "&bSetupCoins");
             configFile.getFileConfig().set("Items.SetupCoin.Lore", "&7Rechtsklick auf einen Block um einen Coin zu setzen.");
 
-            mySqlFile.getFileConfig().set("Login.Username", "sql8505251");
-            mySqlFile.getFileConfig().set("Login.Port", 3306);
-            mySqlFile.getFileConfig().set("Login.Database", "sql8505251");
-            mySqlFile.getFileConfig().set("Login.Host", "sql8.freemysqlhosting.net");
-            mySqlFile.getFileConfig().set("Login.Password", "iKETWBjSd6");
+            configFile.getFileConfig().set("Inventory.StatsInventory.Self.Name", "&7Stats von &6dir");
+            configFile.getFileConfig().set("Inventory.StatsInventory.Other.Name", "&7Stats von &6{String}");
 
             try {
                 messageFile.getFileConfig().save(messageFile.getFile());
+                configFile.getFileConfig().save(configFile.getFile());
+                mySqlFile.getFileConfig().save(mySqlFile.getFile());
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
@@ -271,20 +277,6 @@ public class PacMan extends JavaPlugin {
                 .setName(getConfigFile().getValue("Inventory.SetupInventory.Items.CoinSpawn.Name"))
                 .addLoreLine(getConfigFile().getValue("Inventory.SetupInventory.Items.CoinSpawn.Lore")).toItemStack();
         setupInventory.setItem(14, coinSpawnItemStack);
-
-        leaderboardInventory = Bukkit.getServer().createInventory(null, 3 * 9, getConfigFile().getValue("Inventory.LeaderboardInventory.Name"));
-
-        updateRankingInventory();
-    }
-
-    public void updateRankingInventory() {
-        /**
-         * TODO:
-         * - Get top 3 players
-         * - Get their heads
-         * - Get their stats
-         * - Put into slots
-         */
     }
 
     public static PacMan getInstance() {

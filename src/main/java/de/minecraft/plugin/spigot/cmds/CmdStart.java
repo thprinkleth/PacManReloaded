@@ -48,6 +48,14 @@ public class CmdStart implements CommandExecutor {
             return true;
         }
 
+        // Überprüft, ob das Spiel nicht starten kann
+        if (!INSTANCE.getGameStateManager().canGameStart()) {
+
+            // Schickt dem Spieler eine Nachricht, dass noch nicht alle notwendigen Positionen gesetzt wurden
+            player.sendMessage(INSTANCE.getMessageFile().getValue("Lobby.Countdown.NotEnoughLocations", player));
+            return true;
+        }
+
         // Erzeugt einen Auftrag, welcher alle 20 "gameticks", oder einmal jede Sekunde, ausgeführt wird
         cooldownScheduler = Bukkit.getScheduler().scheduleAsyncRepeatingTask(INSTANCE, new Runnable() {
 
@@ -86,6 +94,9 @@ public class CmdStart implements CommandExecutor {
 
                     // Setzt den derzeitigen Spielstatus auf Ingame
                     INSTANCE.getGameStateManager().setCurrent(GameState.INGAME_STATE);
+
+                    // Schickt dem Spieler eine Nachricht, dass das Spiel startet
+                    player.sendMessage(INSTANCE.getMessageFile().getValue("Lobby.Countdown.Starting", player));
                 }
                 countdown--;
             }

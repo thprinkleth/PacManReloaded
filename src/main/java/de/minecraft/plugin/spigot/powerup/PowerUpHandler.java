@@ -3,6 +3,9 @@ package de.minecraft.plugin.spigot.powerup;
 import de.minecraft.plugin.spigot.PacMan;
 import de.minecraft.plugin.spigot.util.EntitySpawner;
 import org.bukkit.Bukkit;
+import org.bukkit.boss.BarColor;
+import org.bukkit.boss.BarStyle;
+import org.bukkit.boss.BossBar;
 
 import java.util.HashMap;
 import java.util.Random;
@@ -19,7 +22,7 @@ public class PowerUpHandler {
      */
     private boolean[] powerUpList;
 
-    private final PacMan instance = PacMan.getInstance();
+    private final PacMan INSTANCE = PacMan.getInstance();
 
     // Speichert die Art des PowerUps ab
     private final HashMap<Integer, String> powerUpHashMap;
@@ -95,18 +98,18 @@ public class PowerUpHandler {
 
         // Löscht jedes PowerUp-Item, das auf dem Boden liegt
         for (int i : powerUpHashMap.keySet()) {
-            instance.getPowerUpDotHandler().deleteDotOnMap(instance.getLocationFile().getLocation("Game.Location.PowerUp." + i));
+            INSTANCE.getPowerUpDotHandler().deleteDotOnMap(INSTANCE.getLocationFile().getLocation("Game.Location.PowerUp." + i));
         }
 
         // Setzt die HashMap für die PowerUps zurück
         resetPowerUpHashMap();
 
         // Geht durch jede PowerUp-Position durcht
-        for (int i = 0; i < instance.getConfigFile().getIntValue("Game.Amount.Locations.PowerUps"); i++) {
+        for (int i = 0; i < INSTANCE.getConfigFile().getIntValue("Game.Amount.Locations.PowerUps"); i++) {
 
             // Erstellt ein zufälliges PowerUp an seiner Stelle
             int powerUp = new Random().nextInt(6);
-            Bukkit.getScheduler().runTask(instance, new EntitySpawner(instance.getLocationFile().getSpawn("Game.Location.PowerUp." + i), instance.getPickupableItemStacks().getPowerUpItemStack(powerUp)));
+            Bukkit.getScheduler().runTask(INSTANCE, new EntitySpawner(INSTANCE.getLocationFile().getSpawn("Game.Location.PowerUp." + i), INSTANCE.getPickupableItemStacks().getPowerUpItemStack(powerUp)));
 
             // Überprüft welches PowerUp gesetzt wurde
             switch (powerUp) {

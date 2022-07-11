@@ -3,6 +3,7 @@ package de.minecraft.plugin.spigot.cmds;
 import de.minecraft.plugin.spigot.PacMan;
 import de.minecraft.plugin.spigot.util.ItemBuilder;
 import org.bukkit.Bukkit;
+import org.bukkit.GameMode;
 import org.bukkit.Material;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -64,6 +65,9 @@ public class CmdSetup implements CommandExecutor {
         // Setzt dem Spieler das Item in die Hand
         player.getInventory().setItem(0, setupItem);
         player.getInventory().setItem(1, autoCoinSetup);
+
+        // Setzt den Spielmodus des Spielers auf Kreativ, sodass er fliegen kann
+        player.setGameMode(GameMode.CREATIVE);
 
         return false;
     }

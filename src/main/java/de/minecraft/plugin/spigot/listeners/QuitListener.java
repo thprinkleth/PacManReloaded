@@ -4,6 +4,7 @@ package de.minecraft.plugin.spigot.listeners;
 import de.minecraft.plugin.spigot.PacMan;
 import de.minecraft.plugin.spigot.gamestate.GameState;
 import de.minecraft.plugin.spigot.gamestate.IngameState;
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -31,6 +32,15 @@ public class QuitListener implements Listener {
 
             // TODO: MySQL lose and everyone else win...
 
+            INSTANCE.getMySQL().addLosesGhost(player);
+            INSTANCE.getMySQL().addLosesPacMan(player);
+
+            for (Player current : Bukkit.getOnlinePlayers()) {
+                if (current != player) {
+                    INSTANCE.getMySQL().addWinsGhost(current);
+                    INSTANCE.getMySQL().addWinsPacMan(current);
+                }
+            }
             return;
         }
 
