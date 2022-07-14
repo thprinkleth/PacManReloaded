@@ -19,10 +19,6 @@ public class ScoreHandler {
         return score;
     }
 
-    public void setScore() {
-
-    }
-
     // Fügt der Punktzahl, abhängig, ob das PowerUp für doppelte Punktzahl aktiviert ist, entweder 1 oder 2 Punkte hinzu
     public void addScore(boolean doublePowerUp) {
         score += (doublePowerUp) ? 2 : 1;

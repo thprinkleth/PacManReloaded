@@ -47,6 +47,7 @@ public class PostGameState extends GameState {
             // Gibt dem Spieler Effekte, dass er nicht springen kann, dass er für drei Sekunden nicht bewegen kann und nichts sieht
             player.addPotionEffect(new PotionEffect(PotionEffectType.SLOW, 3 * 20, 200));
             player.addPotionEffect(new PotionEffect(PotionEffectType.BLINDNESS, 3 * 20, 200));
+            player.addPotionEffect(new PotionEffect(PotionEffectType.NIGHT_VISION, Integer.MAX_VALUE, 1));
 
             // Führt "stop()" nach 120 Sekunden aus
             Bukkit.getScheduler().runTaskLater(INSTANCE, new Runnable() {
@@ -62,7 +63,11 @@ public class PostGameState extends GameState {
     @Override
     public void stop() {
 
-        // Schließt den Server
-        Bukkit.getServer().shutdown();
+       Bukkit.getScheduler().runTaskLater(INSTANCE, new Runnable() {
+           @Override
+           public void run() {
+               INSTANCE.getGameStateManager().setCurrent(GameState.PREGAME_STATE);
+           }
+       }, 2 * 20 * 60);
     }
 }

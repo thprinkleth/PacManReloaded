@@ -70,8 +70,7 @@ public class IngameState extends GameState {
 
             pacMan.getInventory().setItemInOffHand(new ItemStack(Material.EMPTY_MAP));
 
-            // Bukkit.getScheduler().runTaskLaterAsynchronously(INSTANCE, () -> pacMan.sendMap(map), 10);
-            System.out.println(map.getId());
+            // pacMan.sendMap(map);
 
             // Erzeugt einen sich wiederholenden Auftrag, welcher jede viertel Sekunde aufgerufen wird
             scheduler = Bukkit.getScheduler().scheduleAsyncRepeatingTask(INSTANCE, new Runnable() {

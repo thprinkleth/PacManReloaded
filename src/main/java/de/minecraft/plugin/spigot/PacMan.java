@@ -183,7 +183,7 @@ public class PacMan extends JavaPlugin {
             messageFile.getFileConfig().set("Setup.Spawn.Set.PacMan.Success", "{Prefix} &aDu hast den Spawnpunkt PacMan erfolgreich gesetzt.");
             messageFile.getFileConfig().set("Setup.Spawn.Set.PacMan.NotSuccess", "{Prefix} &cDer Spawnpunkt konnte nicht gesetzt werden.");
             messageFile.getFileConfig().set("Setup.Spawn.Set.Coin.Success", "{Prefix} &aDu hast die &6{Number}&ate Position für einen Coin erfolgreich gesetzt.");
-            messageFile.getFileConfig().set("Setup.Spawn.Set.AutoCoin.Success", "{Prefix} &aEs wurde(n) &6{Number} Position(en) für einen Coin erfolgreich automatisch gespeichert.");
+            messageFile.getFileConfig().set("Setup.Spawn.Set.AutoCoin.Success", "{Prefix} &aEs wurde(n) &6{Number} &aPosition(en) für einen Coin erfolgreich automatisch gespeichert.");
             messageFile.getFileConfig().set("Setup.Spawn.Set.Coin.NotSuccess", "{Prefix} &cDer Spawnpunkt konnte nicht gesetzt werden.");
             messageFile.getFileConfig().set("Setup.Spawn.Set.PowerUp.Success", "{Prefix} &aDu hast &6{Number}&ate Position für ein Powerup erfolgreich gesetzt.");
             messageFile.getFileConfig().set("Setup.Spawn.Set.PowerUp.NotSuccess", "{Prefix} &cDer Spawnpunkt konnte nicht gesetzt werden.");
@@ -235,8 +235,8 @@ public class PacMan extends JavaPlugin {
             configFile.getFileConfig().set("Items.SetupCoin.Name", "&bSetupCoins");
             configFile.getFileConfig().set("Items.SetupCoin.Lore", "&7Rechtsklick auf einen Block um einen Coin zu setzen.");
 
-            configFile.getFileConfig().set("Inventory.StatsInventory.Self.Name", "&7Stats von &6dir");
-            configFile.getFileConfig().set("Inventory.StatsInventory.Other.Name", "&7Stats von &6{String}");
+            configFile.getFileConfig().set("Inventory.StatsInventory.Self.Name", "&7Stats von &8dir");
+            configFile.getFileConfig().set("Inventory.StatsInventory.Other.Name", "&7Stats von &8{String}");
 
             try {
                 messageFile.getFileConfig().save(messageFile.getFile());
